@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KTP Generator - Multi Tools</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="../../fe/tools/style.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <h1 class="text-xl font-semibold text-gray-900">nzr-Multi Tools</h1>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="../../index.html" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium">Home</a>
+                        <a href="../../ai-page.html" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium">AI Page</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-gray-900">KTP Generator</h2>
+            <p class="mt-2 text-gray-600">Generate a realistic Indonesian KTP (ID Card) image</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="p-6">
+                <div class="space-y-6">
+                    <!-- Input Form -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="provinsi" class="block text-sm font-medium text-gray-700">Provinsi</label>
+                            <input type="text" id="provinsi" class="input-field" placeholder="e.g. JAWA BARAT">
+                        </div>
+                        <div>
+                            <label for="kota" class="block text-sm font-medium text-gray-700">Kota/Kabupaten</label>
+                            <input type="text" id="kota" class="input-field" placeholder="e.g. BANDUNG">
+                        </div>
+                        <div>
+                            <label for="nik" class="block text-sm font-medium text-gray-700">NIK</label>
+                            <input type="text" id="nik" class="input-field" placeholder="16-digit NIK" maxlength="16">
+                        </div>
+                        <div>
+                            <label for="nama" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
+                            <input type="text" id="nama" class="input-field" placeholder="Nama lengkap">
+                        </div>
+                        <div>
+                            <label for="ttl" class="block text-sm font-medium text-gray-700">Tempat/Tanggal Lahir</label>
+                            <input type="text" id="ttl" class="input-field" placeholder="e.g. BANDUNG, 25-09-1997">
+                        </div>
+                        <div>
+                            <label for="jenisKelamin" class="block text-sm font-medium text-gray-700">Jenis Kelamin</label>
+                            <select id="jenisKelamin" class="input-field">
+                                <option value="LAKI-LAKI">LAKI-LAKI</option>
+                                <option value="PEREMPUAN">PEREMPUAN</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="golonganDarah" class="block text-sm font-medium text-gray-700">Golongan Darah</label>
+                            <select id="golonganDarah" class="input-field">
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="AB">AB</option>
+                                <option value="O">O</option>
+                                <option value="-">-</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="alamat" class="block text-sm font-medium text-gray-700">Alamat</label>
+                            <input type="text" id="alamat" class="input-field" placeholder="e.g. JL. SUDIRMAN NO. 123">
+                        </div>
+                        <div>
+                            <label for="rtRw" class="block text-sm font-medium text-gray-700">RT/RW</label>
+                            <input type="text" id="rtRw" class="input-field" placeholder="e.g. 05/08">
+                        </div>
+                        <div>
+                            <label for="kelDesa" class="block text-sm font-medium text-gray-700">Kel/Desa</label>
+                            <input type="text" id="kelDesa" class="input-field" placeholder="e.g. RAWA BOBO">
+                        </div>
+                        <div>
+                            <label for="kecamatan" class="block text-sm font-medium text-gray-700">Kecamatan</label>
+                            <input type="text" id="kecamatan" class="input-field" placeholder="e.g. PASAR MINGGU">
+                        </div>
+                        <div>
+                            <label for="agama" class="block text-sm font-medium text-gray-700">Agama</label>
+                            <select id="agama" class="input-field">
+                                <option value="ISLAM">ISLAM</option>
+                                <option value="KRISTEN">KRISTEN</option>
+                                <option value="KATOLIK">KATOLIK</option>
+                                <option value="HINDU">HINDU</option>
+                                <option value="BUDDHA">BUDDHA</option>
+                                <option value="KONGHUCU">KONGHUCU</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="status" class="block text-sm font-medium text-gray-700">Status Perkawinan</label>
+                            <select id="status" class="input-field">
+                                <option value="BELUM MENIKAH">BELUM MENIKAH</option>
+                                <option value="MENIKAH">MENIKAH</option>
+                                <option value="CERAI HIDUP">CERAI HIDUP</option>
+                                <option value="CERAI MATI">CERAI MATI</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="pekerjaan" class="block text-sm font-medium text-gray-700">Pekerjaan</label>
+                            <input type="text" id="pekerjaan" class="input-field" placeholder="e.g. PEGAWAI SWASTA">
+                        </div>
+                        <div>
+                            <label for="kewarganegaraan" class="block text-sm font-medium text-gray-700">Kewarganegaraan</label>
+                            <input type="text" id="kewarganegaraan" class="input-field" value="WNI" readonly>
+                        </div>
+                        <div>
+                            <label for="berlaku" class="block text-sm font-medium text-gray-700">Berlaku Hingga</label>
+                            <input type="text" id="berlaku" class="input-field" value="SEUMUR HIDUP" readonly>
+                        </div>
+                        <div>
+                            <label for="pasPhoto" class="block text-sm font-medium text-gray-700">Pas Photo URL (Optional)</label>
+                            <input type="text" id="pasPhoto" class="input-field" placeholder="URL to 4x6 photo">
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center space-x-4">
+                        <button id="generateBtn" class="btn-primary">
+                            Generate KTP
+                        </button>
+                        <button id="downloadBtn" class="btn-secondary">
+                            Download
+                        </button>
+                    </div>
+
+                    <!-- Status Message -->
+                    <div id="status" class="hidden text-center p-3 rounded-lg"></div>
+
+                    <!-- Result Section -->
+                    <div id="result" class="hidden">
+                        <div class="border-t pt-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Generated KTP</h3>
+                            <div class="flex justify-center">
+                                <img id="ktpImage" class="max-w-full h-auto rounded-lg shadow-lg" alt="Generated KTP" crossorigin="anonymous">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../be/tools/ktp.js"></script>
+</body>
+</html> 

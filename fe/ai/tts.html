@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Speech - AI Tools</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="../../fe/tools/style.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <h1 class="text-xl font-semibold text-gray-900">nzr-Multi Tools</h1>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="../../index.html" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium">Home</a>
+                        <a href="../../ai-page.html" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium">AI Page</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-gray-900">AI Text to Speech</h2>
+            <p class="mt-2 text-gray-600">Convert text to natural-sounding speech using AI technology</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="p-6">
+                <div class="space-y-6">
+                    <!-- Input Form -->
+                    <div>
+                        <label for="textInput" class="block text-sm font-medium text-gray-700">Text to Convert</label>
+                        <div class="mt-1">
+                            <textarea id="textInput" rows="4" class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="Enter text to convert to speech..."></textarea>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="voiceModel" class="block text-sm font-medium text-gray-700">Voice Model</label>
+                        <select id="voiceModel" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                            <option value="nova">Nova</option>
+                            <option value="shimmer">Shimmer</option>
+                            <option value="alloy">Alloy</option>
+                            <option value="echo">Echo</option>
+                            <option value="fable">Fable</option>
+                            <option value="onyx">Onyx</option>
+                        </select>
+                    </div>
+
+                    <div class="flex justify-center space-x-4">
+                        <button id="convertBtn" class="btn-primary">
+                            Convert to Speech
+                        </button>
+                        <button id="downloadBtn" class="btn-secondary" disabled>
+                            Download MP3
+                        </button>
+                    </div>
+
+                    <!-- Status Message -->
+                    <div id="status" class="hidden text-center p-3 rounded-lg"></div>
+
+                    <!-- Audio Player -->
+                    <div id="audioPlayer" class="hidden">
+                        <div class="border-t pt-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Generated Speech</h3>
+                            <div class="flex justify-center">
+                                <audio id="audioElement" controls class="w-full max-w-md">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../be/ai/tts.js"></script>
+</body>
+</html> 

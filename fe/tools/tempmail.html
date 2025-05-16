@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temporary Email - Multi Tools</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="../../fe/tools/style.css" rel="stylesheet">
+    <style>
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #3B82F6;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .nav-link.active::after {
+            width: 100%;
+        }
+        .copy-button {
+            transition: all 0.3s ease;
+        }
+        .copy-button:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <h1 class="text-xl font-semibold text-gray-900">nzr-Multi Tools</h1>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="../../index.html" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium">Home</a>
+                        <a href="../../ai-page.html" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium">AI Page</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-3xl mx-auto">
+            <!-- Email Generator Section -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+                <div class="p-6">
+                    <h2 class="text-2xl font-bold text-center mb-6">Temporary Email Generator</h2>
+                    
+                    <div id="emailSection" class="space-y-6">
+                        <div class="text-center">
+                            <button onclick="generateEmail()" 
+                                    class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition duration-300 font-medium">
+                                Generate New Email
+                            </button>
+                        </div>
+
+                        <div id="emailResult" class="hidden">
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-sm font-medium text-gray-600">Your Temporary Email:</span>
+                                    <button onclick="copyEmail()" 
+                                            class="copy-button text-blue-500 hover:text-blue-600 text-sm font-medium flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                        </svg>
+                                        Copy
+                                    </button>
+                                </div>
+                                <p id="emailAddress" class="text-lg font-mono bg-white p-2 rounded border"></p>
+                                
+                                <div class="mt-2">
+                                    <span class="text-sm font-medium text-gray-600">Email ID:</span>
+                                    <div class="flex items-center justify-between">
+                                        <p id="emailId" class="text-sm font-mono bg-white p-2 rounded border mt-1 flex-grow mr-2"></p>
+                                        <button onclick="copyId()" 
+                                                class="copy-button text-blue-500 hover:text-blue-600 text-sm font-medium flex items-center">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                            </svg>
+                                            Copy
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inbox Section -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="p-6">
+                    <h2 class="text-2xl font-bold text-center mb-6">Check Inbox</h2>
+                    
+                    <div class="space-y-6">
+                        <div class="flex space-x-4">
+                            <input type="text" 
+                                   id="inboxId" 
+                                   placeholder="Paste your Email ID here" 
+                                   class="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button onclick="checkInbox()" 
+                                    class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition duration-300 font-medium">
+                                Check Mail
+                            </button>
+                        </div>
+
+                        <div id="inboxResult" class="hidden">
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <h3 class="font-semibold mb-2">Inbox Messages:</h3>
+                                <div id="messagesList" class="space-y-4">
+                                    <!-- Messages will be inserted here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ <!-- Scripts -->
+ <script src="../../Services/ratelimiter.js"></script>
+ <script src="../../Services/cache.js"></script>
+ <script src="../../be/tools/tempmail.js"></script>
+</body>
+</html> 

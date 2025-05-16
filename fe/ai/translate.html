@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translator - Multi Tools</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="translate.js"></script>
+    <style>
+        /* Common Navigation Styles */
+        .nav-link {
+            position: relative;
+            color: #6B7280;
+            transition: color 0.3s;
+        }
+        .nav-link:hover {
+            color: #111827;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #3B82F6;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .nav-link.active {
+            color: #111827;
+        }
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        /* Common Form Styles */
+        .input-field {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #E5E7EB;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Common Button Styles */
+        .btn-primary {
+            background-color: #3B82F6;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #2563EB;
+        }
+        .btn-secondary {
+            background-color: #10B981;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .btn-secondary:hover {
+            background-color: #059669;
+        }
+
+        /* Additional Styles */
+        .text-area-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 12px;
+            border: 1px solid #E5E7EB;
+            border-radius: 6px;
+            font-size: 16px;
+            line-height: 1.5;
+            resize: none;
+            margin-bottom: 8px;
+            box-sizing: border-box;
+            background-color: #ffffff;
+        }
+
+        .character-count {
+            font-size: 14px;
+            color: #374151;
+            text-align: right;
+            margin-bottom: 16px;
+        }
+
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+     <!-- Navigation -->
+     <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <h1 class="text-xl font-semibold text-gray-900">nzr-Multi Tools</h1>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="../../index.html" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium">Home</a>
+                        <a href="../../ai-page.html" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium">AI Page</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-gray-900">Novel Translator</h2>
+            <p class="mt-2 text-gray-600">Translate English novel text to Indonesian with natural language flow</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="p-6">
+                <!-- Tips Section -->
+                <div class="bg-blue-50 rounded-lg p-4 mb-6">
+                    <h3 class="text-lg font-semibold text-blue-900 mb-2">Tips for Better Translation:</h3>
+                    <ul class="text-sm space-y-2 text-blue-800">
+                        <li>• Make sure your text is in proper English</li>
+                        <li>• Keep paragraphs intact for better context</li>
+                        <li>• Include proper punctuation and formatting</li>
+                        <li>• Check the translation for accuracy before using</li>
+                    </ul>
+                </div>
+
+                <!-- Input Form -->
+                <div class="space-y-4">
+                    <div class="text-area-container">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">English Text:</h3>
+                        <textarea id="sourceText" class="input-field" placeholder="Enter English text here..."></textarea>
+                        <div id="sourceCount" class="character-count">0 characters</div>
+                    </div>
+
+                    <div class="flex justify-center space-x-4">
+                        <button id="translateBtn" class="btn-primary">
+                            <div id="loadingSpinner" class="spinner"></div>
+                            Translate
+                        </button>
+                        <button id="copyBtn" class="btn-secondary">Copy Translation</button>
+                        <button id="clearBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">Clear All</button>
+                    </div>
+
+                    <div class="text-area-container">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Indonesian Translation:</h3>
+                        <textarea id="translatedText" class="input-field" placeholder="Translation will appear here..." readonly></textarea>
+                        <div id="translatedCount" class="character-count">0 characters</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../be/ai/translate.js"></script>
+</body>
+</html> 

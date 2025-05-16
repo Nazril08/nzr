@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi Tools - Your Creative Toolkit</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <style>
+        .card {
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #3B82F6;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .nav-link.active::after {
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <h1 class="text-xl font-semibold text-gray-900">nzr-Multi Tools</h1>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="#" class="nav-link active inline-flex items-center px-1 pt-1 text-sm font-medium">Home</a>
+                        <a href="ai-page.html" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium">AI Page</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">Welcome to Multi Tools</h2>
+            <p class="text-lg text-gray-600">Your all-in-one creative toolkit for AI art, image processing, and utility tools.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- OCR Tool Card -->
+            <div class="card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl">
+                <div class="p-6">
+                    <div class="mb-4">
+                        <svg class="w-12 h-12 icon-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">OCR Tool</h3>
+                    <p class="text-gray-600 mb-4">Extract text from images using Optical Character Recognition.</p>
+                    <a href="/fe/tools/ocr.html" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md button-primary">
+                        Extract Text
+                    </a>
+                </div>
+            </div>
+
+            <!-- Temp Mail Card -->
+            <div class="card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl">
+                <div class="p-6">
+                    <div class="mb-4">
+                        <svg class="w-12 h-12 icon-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Temporary Email</h3>
+                    <p class="text-gray-600 mb-4">Generate temporary email addresses for secure, disposable communication.</p>
+                    <a href="/fe/tools/tempmail.html" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md button-primary">
+                        Create Email
+                    </a>
+                </div>
+            </div>
+
+            <!-- faketweetCard -->
+            <div class="card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl">
+                <div class="p-6">
+                    <div class="mb-4">
+                        <svg class="w-12 h-12 icon-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">EROR!! Fake Tweet Generator</h3>
+                    <p class="text-gray-600 mb-4">Create realistic-looking tweet images with custom content and engagement stats</p>
+                    <a href="/fe/tools/faketweet.html" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md button-primary">
+                        Create Tweet
+                    </a>
+                </div>
+            </div>
+
+             <!-- ML Account Stalker Card -->
+             <div class="card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl">
+                <div class="p-6">
+                    <div class="mb-4">
+                        <svg class="w-12 h-12 icon-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">ML Account Stalker</h3>
+                    <p class="text-gray-600 mb-4">Check Mobile Legends account details using User ID and Zone ID.</p>
+                    <a href="ml.html" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md button-primary">
+                        Check Account
+                    </a>
+                </div>
+            </div>
+
+            <!-- QR Code Card -->
+            <div class="card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl">
+                <div class="p-6">
+                    <div class="mb-4">
+                        <svg class="w-12 h-12 icon-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">QR Code Generator</h3>
+                    <p class="text-gray-600 mb-4">Generate QR codes for links, text, and contact information.</p>
+                    <a href="/fe/tools/qr.html" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md button-primary">
+                        Generate QR
+                    </a>
+                </div>
+            </div>
+
+            <!-- KTP Generator Card -->
+            <div class="card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl">
+                <div class="p-6">
+                    <div class="mb-4">
+                        <svg class="w-12 h-12 icon-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">KTP Generator</h3>
+                    <p class="text-gray-600 mb-4">Generate realistic Indonesian ID Card (KTP) images with custom information.</p>
+                    <a href="/fe/tools/ktp.html" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md button-primary">
+                        Generate KTP
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html> 

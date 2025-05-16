@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Swap - AI Tools</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="../../fe/tools/style.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <h1 class="text-xl font-semibold text-gray-900">nzr-Multi Tools</h1>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="../../index.html" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium">Home</a>
+                        <a href="../../ai-page.html" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium">AI Page</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-gray-900">AI Face Swap</h2>
+            <p class="mt-2 text-gray-600">Swap faces between two images using AI technology</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="p-6">
+                <div class="space-y-6">
+                    <!-- Input Form -->
+                    <div class="grid grid-cols-1 gap-6">
+                        <div>
+                            <label for="originalFace" class="block text-sm font-medium text-gray-700">Original Face Image URL</label>
+                            <input type="text" id="originalFace" class="input-field" placeholder="Enter URL of the original face image">
+                            <p class="mt-1 text-sm text-gray-500">This is the face that will be swapped</p>
+                        </div>
+
+                        <div>
+                            <label for="targetFace" class="block text-sm font-medium text-gray-700">Target Face Image URL</label>
+                            <input type="text" id="targetFace" class="input-field" placeholder="Enter URL of the target face image">
+                            <p class="mt-1 text-sm text-gray-500">This is where the face will be swapped to</p>
+                        </div>
+
+                        <!-- Preview Section -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Original Face Preview</label>
+                                <img id="originalPreview" class="w-full h-48 object-cover rounded-lg bg-gray-100" alt="Original face preview">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Target Face Preview</label>
+                                <img id="targetPreview" class="w-full h-48 object-cover rounded-lg bg-gray-100" alt="Target face preview">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center space-x-4">
+                        <button id="swapBtn" class="btn-primary">
+                            Swap Faces
+                        </button>
+                        <button id="downloadBtn" class="btn-secondary">
+                            Download
+                        </button>
+                    </div>
+
+                    <!-- Status Message -->
+                    <div id="status" class="hidden text-center p-3 rounded-lg"></div>
+
+                    <!-- Result Section -->
+                    <div id="result" class="hidden">
+                        <div class="border-t pt-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Result</h3>
+                            <div class="flex justify-center">
+                                <img id="resultImage" class="max-w-full h-auto rounded-lg shadow-lg" alt="Face swap result">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../be/ai/faceswap.js"></script>
+</body>
+</html> 

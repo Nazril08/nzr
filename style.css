@@ -1,0 +1,161 @@
+/* Common styles */
+.gradient-header {
+    background: linear-gradient(135deg, #374151 0%, #4B5563 100%);
+}
+
+.card {
+    backdrop-filter: blur(16px) saturate(180%);
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    border: 1px solid rgba(209, 213, 219, 0.3);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Character counter */
+.char-count {
+    font-size: 0.875rem;
+    transition: color 0.3s ease;
+    margin-top: 0.5rem;
+    text-align: right;
+}
+
+/* Textarea styles */
+textarea {
+    min-height: 100px;
+    resize: none;
+    overflow-y: hidden;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    font-size: 16px;
+    line-height: 1.5;
+    transition: all 0.3s ease;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #4B5563;
+    box-shadow: 0 0 0 3px rgba(75, 85, 99, 0.1);
+}
+
+.input-field {
+    transition: all 0.3s ease;
+    border: 2px solid #E5E7EB;
+}
+
+.input-field:focus {
+    border-color: #4B5563;
+    box-shadow: 0 0 0 3px rgba(75, 85, 99, 0.1);
+}
+
+.button-primary {
+    background-color: #4B5563;
+    color: white;
+    transition: all 0.2s ease;
+}
+
+.button-primary:hover {
+    background-color: #374151;
+}
+
+.nav-link {
+    position: relative;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: #4B5563;
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+.nav-link.active::after {
+    width: 100%;
+}
+
+body {
+    background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%);
+    min-height: 100vh;
+}
+
+.tips-section {
+    background-color: #F3F4F6;
+    border: 1px solid #E5E7EB;
+    color: #374151;
+}
+
+.icon-primary {
+    color: #4B5563;
+}
+
+.status-success {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.status-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+#downloadLink a {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background-color: #10b981;
+    color: white;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    margin-top: 1rem;
+    transition: background-color 0.2s;
+}
+
+#downloadLink a:hover {
+    background-color: #059669;
+}
+
+/* Loading spinner */
+.loading {
+    display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 0.5rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Tab styling */
+.tab-active {
+    border-bottom-color: #1f2937;
+    color: #1f2937;
+}
+
+/* File upload zone */
+#uploadSection label:hover {
+    border-color: #6b7280;
+}
+
+#uploadSection label.dragover {
+    background-color: #f3f4f6;
+    border-color: #3b82f6;
+} 
