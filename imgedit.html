@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Temporary Email - Multi Tools</title>
+    <title>AI Background Changer - Multi Tools</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
     <style>
@@ -127,20 +127,56 @@
                 display: none;
             }
         }
-
-        .copy-button {
+        .integration-card {
             transition: all 0.3s ease;
-            min-width: 44px;
-            min-height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: block;
+        }
+        .integration-card.hidden {
+            display: none;
+        }
+        .preview-container {
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
             padding: 0.5rem;
+            background-color: #f9fafb;
         }
-        .copy-button:hover {
-            transform: scale(1.05);
+        .preview-container img {
+            max-width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            margin: 0 auto;
+            display: block;
         }
-
+        /* Responsive improvements */
+        @media (max-width: 768px) {
+            .preview-container img {
+                max-height: 300px;
+            }
+        }
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1000;
+            background: white;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 40;
+        }
+        .overlay.active {
+            display: block;
+        }
         /* Form improvements */
         .form-input {
             width: 100%;
@@ -158,21 +194,14 @@
             .content-container {
                 padding: 1rem;
             }
+            .grid-cols-2 {
+                grid-template-columns: 1fr;
+            }
             .space-y-6 > * + * {
                 margin-top: 1.25rem;
             }
             .p-6 {
                 padding: 1.25rem;
-            }
-            .email-container {
-                flex-direction: column;
-            }
-            .email-container .copy-button {
-                margin-top: 0.5rem;
-                width: 100%;
-            }
-            #emailAddress, #emailId {
-                word-break: break-all;
             }
         }
     </style>
@@ -186,7 +215,7 @@
     </button>
 
     <!-- Overlay -->
-    <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+    <div id="overlay" class="overlay"></div>
 
     <!-- Sidebar -->
     <div id="sidebar" class="sidebar">
@@ -197,8 +226,8 @@
             <h2 class="categories-title">Categories</h2>
             <div class="space-y-2">
                 <div class="category-item" onclick="filterByCategory('all')">All</div>
-                <div class="category-item active" onclick="filterByCategory('tools')">Tools</div>
-                <div class="category-item" onclick="filterByCategory('AI')">AI</div>
+                <div class="category-item" onclick="filterByCategory('tools')">Tools</div>
+                <div class="category-item active" onclick="filterByCategory('AI')">AI</div>
                 <div class="category-item" onclick="filterByCategory('downloader')">Downloader</div>
                 <div class="category-item" onclick="filterByCategory('stalk')">Stalk</div>
                 <div class="category-item" onclick="filterByCategory('generator')">Generator</div>
@@ -220,83 +249,86 @@
             </div>
         </div>
 
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <h1 class="text-2xl font-bold mb-6">Temporary Email Generator</h1>
-            
-            <!-- Email Generator Section -->
-            <div class="bg-white rounded-lg shadow-sm p-6">
-                <!-- Tips Section -->
-                <div class="bg-blue-50 rounded-lg p-4 mb-6">
-                    <h3 class="text-lg font-semibold text-blue-900 mb-2">Tips:</h3>
-                    <ul class="text-sm space-y-2 text-blue-800">
-                        <li>• Email addresses are temporary and will expire after 10 minutes</li>
-                        <li>• Use for testing and verification purposes only</li>
-                        <li>• Do not use for important or sensitive communications</li>
-                        <li>• Emails are public and not secure</li>
-                    </ul>
-                </div>
+        <div class="max-w-6xl mx-auto">
+            <h1 class="text-2xl font-bold mb-6">AI Background Changer</h1>
 
-                <div id="emailSection" class="space-y-6">
-                    <div class="text-center">
-                        <button onclick="generateEmail()" 
-                                class="w-full sm:w-auto bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition duration-300 font-medium">
-                            Generate New Email
+            <!-- Tips Section -->
+            <div class="bg-blue-50 p-4 rounded-lg mb-6">
+                <h2 class="text-lg font-semibold text-blue-700 mb-2">Tips for Best Results:</h2>
+                <ul class="text-blue-600 space-y-1 list-disc list-inside">
+                    <li>Use clear photos with good lighting</li>
+                    <li>Make sure the image is in focus</li>
+                    <li>Supported formats: JPG, PNG (max 5MB)</li>
+                    <li>Higher resolution images work better</li>
+                </ul>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-sm p-4 md:p-6">
+                <div class="space-y-6">
+                    <!-- Input Form -->
+                    <div class="space-y-4">
+                        <div>
+                            <label for="imageUrl" class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+                            <input type="url" 
+                                id="imageUrl" 
+                                class="form-input"
+                                placeholder="Enter the URL of your image">
+                        </div>
+
+                        <div>
+                            <label for="prompt" class="block text-sm font-medium text-gray-700 mb-1">Background Description</label>
+                            <input type="text" 
+                                id="prompt" 
+                                class="form-input"
+                                placeholder="Describe the background you want (e.g., A futuristic city skyline)">
+                        </div>
+
+                        <button id="changeBackground" 
+                                class="w-full bg-blue-500 text-white py-3 px-4 rounded-lg hover:bg-blue-600 transition-colors">
+                            Change Background
                         </button>
                     </div>
 
-                    <!-- Email Display -->
-                    <div id="emailDisplay" class="hidden">
-                        <div class="bg-gray-50 p-4 rounded-lg space-y-4">
-                            <div class="flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
-                                <div class="flex-grow">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                                    <div class="flex items-center space-x-2">
-                                        <span id="emailAddress" class="text-lg font-medium text-gray-900"></span>
-                                        <button onclick="copyEmail()" class="copy-button bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Email ID</label>
-                                    <div class="flex items-center space-x-2">
-                                        <span id="emailId" class="text-lg font-medium text-gray-900"></span>
-                                        <button onclick="copyEmailId()" class="copy-button bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
-                                            </svg>
-                                        </button>
-                                    </div>
+                    <!-- Status Message -->
+                    <div id="status" class="hidden text-center p-3 rounded-lg"></div>
+
+                    <!-- Preview and Result Section -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Original Image Preview -->
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Original Image</h3>
+                            <div class="preview-container">
+                                <img id="previewImage" class="rounded-lg" alt="Preview">
+                            </div>
+                        </div>
+
+                        <!-- Result Preview -->
+                        <div id="result">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Result</h3>
+                            <div class="preview-container">
+                                <img id="resultImage" class="rounded-lg" alt="Result">
+                            </div>
+                        </div>
+
+                        <!-- Loading State -->
+                        <div id="loading" class="hidden col-span-1 md:col-span-2 lg:col-span-1 lg:col-start-2">
+                            <div class="preview-container flex items-center justify-center py-8">
+                                <div class="text-center">
+                                    <svg class="animate-spin h-8 w-8 mx-auto text-blue-500 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    <p class="text-gray-600">Processing your image... Please wait...</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Messages Section -->
-                    <div id="messagesSection" class="hidden">
-                        <h3 class="text-lg font-semibold mb-4">Inbox</h3>
-                        <div id="messagesList" class="space-y-4">
-                            <!-- Messages will be inserted here -->
-                        </div>
-                    </div>
-
-                    <!-- Loading State -->
-                    <div id="loading" class="hidden">
-                        <div class="flex justify-center items-center py-8">
-                            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-                        </div>
-                        <p class="text-center text-gray-600">Processing request...</p>
-                    </div>
-
-                    <!-- Error Message -->
-                    <div id="error" class="hidden bg-red-100 text-red-700 p-4 rounded-lg"></div>
                 </div>
             </div>
         </div>
     </div>
 
+    <script src="js/imgedit.js"></script>
     <script>
         // Sidebar Toggle Function
         function toggleSidebar() {
@@ -335,18 +367,66 @@
             }
         }
 
-        // Set initial active state based on current category
         document.addEventListener('DOMContentLoaded', function() {
             const categoryItems = document.querySelectorAll('.category-item');
             categoryItems.forEach(item => {
-                if (item.textContent === 'Tools') {
+                if (item.textContent === 'AI') {
                     item.classList.add('active');
                 } else {
                     item.classList.remove('active');
                 }
             });
+
+            // Preview image when URL is entered
+            const imageUrl = document.getElementById('imageUrl');
+            const previewImage = document.getElementById('previewImage');
+            const status = document.getElementById('status');
+
+            imageUrl.addEventListener('input', function() {
+                const url = this.value.trim();
+                if (url) {
+                    // Show loading state
+                    showStatus('loading', 'Loading image...');
+                    
+                    // Set up image load handlers
+                    previewImage.onload = function() {
+                        showStatus('success', 'Image loaded successfully!');
+                    };
+                    
+                    previewImage.onerror = function() {
+                        showStatus('error', 'Failed to load image. Please check the URL.');
+                        previewImage.src = '';
+                    };
+
+                    // Set the image source
+                    previewImage.src = url;
+                } else {
+                    previewImage.src = '';
+                    showStatus('error', 'Please enter an image URL');
+                }
+            });
         });
+
+        function showStatus(type, message) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.classList.remove('hidden');
+            
+            // Remove all existing color classes
+            status.classList.remove('bg-blue-100', 'text-blue-700', 'bg-green-100', 'text-green-700', 'bg-red-100', 'text-red-700');
+            
+            switch(type) {
+                case 'loading':
+                    status.classList.add('bg-blue-100', 'text-blue-700');
+                    break;
+                case 'success':
+                    status.classList.add('bg-green-100', 'text-green-700');
+                    break;
+                case 'error':
+                    status.classList.add('bg-red-100', 'text-red-700');
+                    break;
+            }
+        }
     </script>
-    <script src="be/tools/tempmail.js"></script>
 </body>
 </html> 

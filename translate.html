@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Translator - Multi Tools</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="translate.js"></script>
     <style>
         /* Common Navigation Styles */
         .nav-link {
@@ -141,57 +140,157 @@
         .integration-card.hidden {
             display: none;
         }
+
+        /* Mobile styles */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: 100vh;
+                background: white;
+                transition: transform 0.3s ease-in-out;
+                transform: translateX(-100%);
+                z-index: 1000;
+                box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+            }
+            .logo {
+                position: relative;
+                display: block;
+                text-align: center;
+                border-bottom: 1px solid #e5e7eb;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+                left: 0;
+            }
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 999;
+                opacity: 0;
+                transition: opacity 0.3s ease-in-out;
+            }
+            .overlay.active {
+                display: block;
+                opacity: 1;
+            }
+            .main-content {
+                margin-left: 0 !important;
+                padding-top: 4rem;
+            }
+        }
+
+        /* Desktop styles */
+        @media (min-width: 769px) {
+            .logo {
+                position: relative;
+                border-bottom: 1px solid #e5e7eb;
+            }
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 256px;
+                height: 100vh;
+                overflow-y: auto;
+                background: white;
+                border-right: 1px solid #e5e7eb;
+            }
+            .main-content {
+                margin-left: 256px;
+            }
+            .mobile-menu-btn {
+                display: none;
+            }
+        }
+
+        .logo {
+            padding: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #e5e7eb;
+            background: white;
+        }
+
+        .categories-section {
+            padding: 1.5rem;
+        }
+
+        .categories-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 1rem;
+        }
+
+        .category-item {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
-    <!-- Navigation -->
-    <nav class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <h1 class="text-xl font-semibold text-gray-900">nzr-Multi Tools</h1>
-                    </div>
-                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                        <a href="index.html" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium">Home</a>
-                    </div>
-                </div>
-                <div class="flex items-center">
+    <!-- Mobile Menu Button -->
+    <button id="mobileMenuBtn" class="mobile-menu-btn fixed top-4 right-4 z-[1001] p-2 bg-white rounded-lg shadow-lg md:hidden">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+    </button>
+
+    <!-- Overlay -->
+    <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <div class="logo">
+            <span class="text-xl font-semibold text-gray-900">nzr</span>
+        </div>
+        <div class="categories-section">
+            <h2 class="categories-title">Categories</h2>
+            <div class="space-y-2">
+                <div class="category-item" onclick="filterByCategory('all')">All</div>
+                <div class="category-item" onclick="filterByCategory('tools')">Tools</div>
+                <div class="category-item active" onclick="filterByCategory('AI')">AI</div>
+                <div class="category-item" onclick="filterByCategory('downloader')">Downloader</div>
+                <div class="category-item" onclick="filterByCategory('stalk')">Stalk</div>
+                <div class="category-item" onclick="filterByCategory('generator')">Generator</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content min-h-screen pb-24">
+        <!-- Header -->
+        <div class="bg-white border-b sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <h1 class="text-xl font-bold">Integrations</h1>
                     <div class="relative">
-                        <input type="text" 
-                               id="searchBox" 
-                               placeholder="Search tools..." 
-                               class="w-64 px-4 py-2 pl-10 pr-4 rounded-lg text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                               onkeyup="searchTools()">
-                        <div class="absolute left-3 top-2.5">
-                            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                            </svg>
-                        </div>
+                        <a href="index.html" class="text-gray-600 hover:text-gray-900">Back to Home</a>
                     </div>
                 </div>
             </div>
         </div>
-    </nav>
 
-    <div class="flex">
-        <!-- Categories Sidebar -->
-        <div class="w-64 bg-white h-screen fixed left-0 border-r">
-            <div class="p-6">
-                <h2 class="text-xl font-semibold mb-6">Categories</h2>
-                <div class="space-y-2">
-                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('all')">All</div>
-                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('tools')">Tools</div>
-                    <div class="category-item active rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('AI')">AI</div>
-                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('stalk')">Stalk</div>
-                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('generator')">Generator</div>
-                </div>
-            </div>
-        </div>
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <h1 class="text-2xl font-bold mb-6">Novel Translator (AI-Powered)</h1>
 
-        <!-- Main Content -->
-        <div class="ml-64 flex-1">
-            <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="bg-white rounded-lg shadow-sm p-6">
                 <div class="text-center mb-8">
                     <h2 class="text-3xl font-bold text-gray-900">Novel Translator (AI-Powered)</h2>
                     <p class="mt-2 text-gray-600">AI-powered tool to translate English novel text to Indonesian with natural language processing for smooth, context-aware translations.</p>
@@ -218,60 +317,122 @@
                                 <div id="sourceCount" class="character-count">0 characters</div>
                             </div>
 
-                            <div class="flex justify-center space-x-4">
-                                <button id="translateBtn" class="btn-primary">
-                                    <div id="loadingSpinner" class="spinner"></div>
-                                    Translate
-                                </button>
-                                <button id="copyBtn" class="btn-secondary">Copy Translation</button>
-                                <button id="clearBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">Clear All</button>
-                            </div>
-
                             <div class="text-area-container">
                                 <h3 class="text-lg font-semibold text-gray-900 mb-2">Indonesian Translation:</h3>
-                                <textarea id="translatedText" class="input-field" placeholder="Translation will appear here..." readonly></textarea>
+                                <div class="relative">
+                                    <textarea id="translatedText" class="input-field" placeholder="Translation will appear here..." readonly></textarea>
+                                    <button id="copyTranslatedText" class="absolute right-2 top-2 p-2 text-gray-500 hover:text-gray-700 bg-white rounded-lg shadow-sm border border-gray-200">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+                                        </svg>
+                                    </button>
+                                </div>
                                 <div id="translatedCount" class="character-count">0 characters</div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <button id="translateBtn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center">
+                                    <div id="loadingSpinner" class="spinner mr-2"></div>
+                                    Translate
+                                </button>
+                                <button id="copyBtn" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-medium py-3 px-6 rounded-lg transition-colors">
+                                    Copy Translation
+                                </button>
+                                <button id="clearBtn" class="w-full bg-red-500 hover:bg-red-600 text-white font-medium py-3 px-6 rounded-lg transition-colors">
+                                    Clear All
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
-            </main>
+            </div>
         </div>
     </div>
 
     <script src="be/ai/translate.js"></script>
     <script>
-        function searchTools() {
-            const searchInput = document.getElementById('searchBox').value.toLowerCase().trim();
-            const cards = document.querySelectorAll('.integration-card');
+        // Sidebar Toggle Function
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
             
-            if (searchInput === '') {
-                cards.forEach(card => card.classList.remove('hidden'));
-                return;
+            if (sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+            } else {
+                sidebar.classList.add('open');
+                overlay.classList.add('active');
             }
-
-            cards.forEach(card => {
-                const searchData = card.getAttribute('data-name').toLowerCase();
-                const cardCategory = card.getAttribute('data-category').toLowerCase();
-                
-                // Split search input into words and check if ANY word matches
-                const searchWords = searchInput.split(/\s+/);
-                const matches = searchWords.some(word => 
-                    searchData.includes(word) || cardCategory === word
-                );
-                
-                if (matches) {
-                    card.classList.remove('hidden');
-                } else {
-                    card.classList.add('hidden');
-                }
-            });
         }
+
+        // Copy translation functions
+        async function copyToClipboard(text, button) {
+            try {
+                await navigator.clipboard.writeText(text);
+                
+                // Store original styles
+                const originalClasses = button.className;
+                const originalInnerHTML = button.innerHTML;
+                
+                // Show success state
+                if (button.id === 'copyTranslatedText') {
+                    button.className = 'absolute right-2 top-2 p-2 text-emerald-500 bg-white rounded-lg shadow-sm border border-emerald-500';
+                    button.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>`;
+                } else {
+                    button.textContent = 'Copied!';
+                    button.classList.remove('bg-emerald-500', 'hover:bg-emerald-600');
+                    button.classList.add('bg-emerald-600');
+                }
+                
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    if (button.id === 'copyTranslatedText') {
+                        button.className = originalClasses;
+                        button.innerHTML = originalInnerHTML;
+                    } else {
+                        button.textContent = 'Copy Translation';
+                        button.classList.remove('bg-emerald-600');
+                        button.classList.add('bg-emerald-500', 'hover:bg-emerald-600');
+                    }
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+                alert('Failed to copy text. Please try again.');
+            }
+        }
+
+        // Add click handlers for both copy buttons
+        document.getElementById('copyTranslatedText').addEventListener('click', function() {
+            const translatedText = document.getElementById('translatedText').value;
+            if (translatedText) {
+                copyToClipboard(translatedText, this);
+            }
+        });
+
+        document.getElementById('copyBtn').addEventListener('click', function() {
+            const translatedText = document.getElementById('translatedText').value;
+            if (translatedText) {
+                copyToClipboard(translatedText, this);
+            }
+        });
+
+        // Clear all function
+        document.getElementById('clearBtn').addEventListener('click', function() {
+            document.getElementById('sourceText').value = '';
+            document.getElementById('translatedText').value = '';
+            document.getElementById('sourceCount').textContent = '0 characters';
+            document.getElementById('translatedCount').textContent = '0 characters';
+        });
+
+        // Mobile Menu Button Event
+        document.getElementById('mobileMenuBtn').addEventListener('click', toggleSidebar);
+        document.getElementById('overlay').addEventListener('click', toggleSidebar);
 
         function filterByCategory(category) {
             const categoryItems = document.querySelectorAll('.category-item');
             
-            // Update active category styling
             categoryItems.forEach(item => {
                 if (item.textContent.toLowerCase() === category.toLowerCase() || 
                     (category === 'all' && item.textContent === 'All')) {
@@ -281,7 +442,6 @@
                 }
             });
 
-            // Redirect to index.html with the selected category
             if (category === 'all') {
                 window.location.href = 'index.html';
             } else {
@@ -300,9 +460,6 @@
                 }
             });
         });
-
-        // Initialize search box
-        document.getElementById('searchBox').addEventListener('input', searchTools);
     </script>
 </body>
 </html> 

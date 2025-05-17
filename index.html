@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
     <style>
+        /* Base styles */
         .card {
             transition: all 0.3s ease;
         }
@@ -30,27 +31,196 @@
         .integration-card.hidden {
             display: none;
         }
+
+        .logo {
+            padding: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #e5e7eb;
+            background: white;
+        }
+
+        .categories-section {
+            padding: 1.5rem;
+        }
+
+        .categories-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 1rem;
+        }
+
+        .category-item {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .category-item:hover {
+            background-color: #f3f4f6;
+            color: #2563eb;
+        }
+
+        .category-item.active {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        /* Mobile styles */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: 100vh;
+                background: white;
+                transition: transform 0.3s ease-in-out;
+                transform: translateX(-100%);
+                z-index: 1000;
+                box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+            }
+            .logo {
+                position: relative;
+                display: block;
+                text-align: center;
+                border-bottom: 1px solid #e5e7eb;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+                left: 0;
+            }
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 999;
+                opacity: 0;
+                transition: opacity 0.3s ease-in-out;
+            }
+            .overlay.active {
+                display: block;
+                opacity: 1;
+            }
+            .main-content {
+                margin-left: 0 !important;
+                padding-top: 4rem;
+            }
+            .search-box {
+                width: 100% !important;
+                max-width: 200px;
+            }
+            .pagination-controls {
+                padding: 0.5rem;
+            }
+            .pagination-controls button {
+                padding: 0.5rem !important;
+                font-size: 0.875rem !important;
+            }
+        }
+
+        /* Tablet styles */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+
+        /* Desktop styles */
+        @media (min-width: 769px) {
+            .logo {
+                position: relative;
+                border-bottom: 1px solid #e5e7eb;
+            }
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 256px;
+                height: 100vh;
+                overflow-y: auto;
+                background: white;
+                border-right: 1px solid #e5e7eb;
+            }
+            .main-content {
+                margin-left: 256px;
+            }
+            .mobile-menu-btn {
+                display: none;
+            }
+        }
+
+        /* Fixed elements */
+        .fixed-pagination {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            padding: 1rem;
+            z-index: 900;
+        }
+        @media (min-width: 769px) {
+            .fixed-pagination {
+                left: 256px;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
-    <!-- Navigation -->
-    <nav class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <h1 class="text-xl font-semibold text-gray-900">nzr-Multi Tools</h1>
-                    </div>
-                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                        <a href="#" class="nav-link active inline-flex items-center px-1 pt-1 text-sm font-medium">Home</a>
-                    </div>
-                </div>
-                <div class="flex items-center">
+    <!-- Mobile Menu Button -->
+    <button id="mobileMenuBtn" class="mobile-menu-btn fixed top-4 right-4 z-[1001] p-2 bg-white rounded-lg shadow-lg md:hidden">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+    </button>
+
+    <!-- Overlay -->
+    <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <div class="logo">
+            <span class="text-xl font-semibold text-gray-900">nzr</span>
+        </div>
+        <div class="categories-section">
+            <h2 class="categories-title">Categories</h2>
+            <div class="space-y-2">
+                <div class="category-item active" onclick="filterByCategory('all')">All</div>
+                <div class="category-item" onclick="filterByCategory('tools')">Tools</div>
+                <div class="category-item" onclick="filterByCategory('AI')">AI</div>
+                <div class="category-item" onclick="filterByCategory('downloader')">Downloader</div>
+                <div class="category-item" onclick="filterByCategory('stalk')">Stalk</div>
+                <div class="category-item" onclick="filterByCategory('generator')">Generator</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content min-h-screen pb-24">
+        <!-- Search Bar -->
+        <div class="bg-white border-b sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <h1 class="text-xl font-bold">Integrations</h1>
                     <div class="relative">
                         <input type="text" 
                                id="searchBox" 
                                placeholder="Search tools..." 
-                               class="w-64 px-4 py-2 pl-10 pr-4 rounded-lg text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                               class="w-48 md:w-64 px-4 py-2 pl-10 rounded-lg text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                onkeyup="searchTools()">
                         <div class="absolute left-3 top-2.5">
                             <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,156 +231,236 @@
                 </div>
             </div>
         </div>
-    </nav>
 
-    <div class="flex">
-        <!-- Categories Sidebar -->
-        <div class="w-64 bg-white h-screen fixed left-0 border-r">
-            <div class="p-6">
-                <h2 class="text-xl font-semibold mb-6">Categories</h2>
-                <div class="space-y-2">
-                    <div class="category-item active rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('all')">All</div>
-                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('tools')">Tools</div>
-                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('AI')">AI</div>
-                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('stalk')">Stalk</div>
-                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('generator')">Generator</div>
-                </div>
+        <!-- Cards Grid -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- MLBB Account Checker -->
+                <a href="ml.html" class="integration-card bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer" data-name="mlbb mobile legends bang bang game gaming moba account checker profile stats" data-category="stalk">
+                    <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">MLBB Account Checker</h3>
+                    <p class="text-gray-600">Check Mobile Legends: Bang Bang account details including username, server, and region information.</p>
+                </a>
+
+                <!-- Genshin Impact Player Stalker -->
+                <a href="genshin.html" class="integration-card bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer" data-name="genshin impact game gaming rpg account checker profile stats achievements exploration spiral abyss" data-category="stalk">
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Genshin Impact Player Stalker</h3>
+                    <p class="text-gray-600">View detailed Genshin Impact player profiles including achievements, exploration progress, and Spiral Abyss data.</p>
+                </a>
+
+                <!-- OCR Tool -->
+                <a href="ocr.html" class="integration-card bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer" data-name="ocr optical character recognition text scanner document scanning" data-category="tools">
+                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">EROR OCR Tool</h3>
+                    <p class="text-gray-600">Extract text from images using advanced Optical Character Recognition technology.</p>
+                </a>
+
+                <!-- QR Generator -->
+                <a href="qr.html" class="integration-card bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer" data-name="qr code generator scanner barcode quick response code qrcode" data-category="generator">
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">QR Generator</h3>
+                    <p class="text-gray-600">Generate QR codes for links, text, and contact information with customizable designs.</p>
+                </a>
+
+                <!-- Temp Mail -->
+                <a href="tempmail.html" class="integration-card bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer" data-name="temp mail tempmail disposable email generator inbox creator temporary mailbox" data-category="tools">
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">EROR Temporary Email</h3>
+                    <p class="text-gray-600">Create disposable email addresses for temporary inbox needs.</p>
+                </a>
+
+                <!-- KTP Generator -->
+                <a href="ktp.html" class="integration-card bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer" data-name="ktp generator id card indonesia identity document" data-category="productivity">
+                    <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">KTP Generator</h3>
+                    <p class="text-gray-600">Generate sample Indonesian ID Card (KTP) images with customizable information.</p>
+                </a>
+
+                <!-- AI Background Changer -->
+                <a href="imgedit.html" class="integration-card bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer" data-name="ai background changer image editing artificial intelligence photo editor background removal background change" data-category="AI">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">AI Background Changer</h3>
+                    <p class="text-gray-600">Change image backgrounds using AI with customizable prompts for creative and professional results.</p>
+                </a>
+
+                <!-- AI Image Generator -->
+                <a href="aiimage.html" class="integration-card bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer" data-name="ai image generator artificial intelligence art creator stable diffusion dall-e midjourney style transfer creative design" data-category="AI">
+                    <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v.01M8 9v.01M16 9v.01M12 13v.01M8 13v.01M16 13v.01M12 17v.01M8 17v.01M16 17v.01"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">AI Image Generator</h3>
+                    <p class="text-gray-600">Create stunning AI-generated images with multiple styles, reference images, and customizable settings.</p>
+                </a>
+
+                <!-- Novel Translator -->
+                <a href="translate.html" class="integration-card bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer" data-name="novel translator english indonesian translation text language ai artificial intelligence nlp natural language processing machine translation" data-category="AI">
+                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Novel Translator (AI-Powered)</h3>
+                    <p class="text-gray-600">AI-powered tool to translate English novel text to Indonesian with natural language processing for smooth, context-aware translations.</p>
+                </a>
+
+                <!-- TTS Anime -->
+                <a href="ttsanime.html" class="integration-card bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer" data-name="anime text to speech tts voice audio ai artificial intelligence speech synthesis sound generator umamusume genshin impact character voices japanese chinese english" data-category="AI">
+                    <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Text to Speech (AI-Powered Anime)</h3>
+                    <p class="text-gray-600">Convert text to speech using anime character voices.</p>
+                </a>
+
+                 <!-- Facebook Video Downloader -->
+                 <a href="fbdown.html" class="integration-card bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer" data-name="facebook video downloader fb social media download videos reels stories" data-category="downloader">
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Facebook Video Downloader</h3>
+                    <p class="text-gray-600">Download videos from Facebook with ease.</p>
+                </a>
             </div>
         </div>
+    </div>
 
-        <!-- Main Content -->
-        <div class="ml-64 flex-1">
-            <div class="p-8">
-                <h1 class="text-2xl font-bold mb-6">Integrations</h1>
-
-                <!-- Integration Cards Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- MLBB Account Checker -->
-                    <a href="ml.html" class="integration-card bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer" data-name="mlbb mobile legends bang bang game gaming moba account checker profile stats" data-category="stalk">
-                        <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
-                            <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-semibold mb-2">MLBB Account Checker</h3>
-                        <p class="text-gray-600">Check Mobile Legends: Bang Bang account details including username, server, and region information.</p>
-                    </a>
-
-                    <!-- Genshin Impact Player Stalker -->
-                    <a href="genshin.html" class="integration-card bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer" data-name="genshin impact game gaming rpg account checker profile stats achievements exploration spiral abyss" data-category="stalk">
-                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                            <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"/>
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-semibold mb-2">Genshin Impact Player Stalker</h3>
-                        <p class="text-gray-600">View detailed Genshin Impact player profiles including achievements, exploration progress, and Spiral Abyss data.</p>
-                    </a>
-
-                    <!-- OCR Tool -->
-                    <a href="ocr.html" class="integration-card bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer" data-name="ocr optical character recognition text scanner document scanning" data-category="tools">
-                        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
-                            <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-semibold mb-2">OCR Tool</h3>
-                        <p class="text-gray-600">Extract text from images using advanced Optical Character Recognition technology.</p>
-                    </a>
-
-                    <!-- QR Generator -->
-                    <a href="qr.html" class="integration-card bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer" data-name="qr code generator scanner barcode quick response code qrcode" data-category="generator">
-                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                            <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-semibold mb-2">QR Generator</h3>
-                        <p class="text-gray-600">Generate QR codes for links, text, and contact information with customizable designs.</p>
-                    </a>
-
-                    <!-- Temp Mail -->
-                    <a href="tempmail.html" class="integration-card bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer" data-name="temp mail tempmail disposable email generator inbox creator temporary mailbox" data-category="tools">
-                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                            <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-semibold mb-2">Temporary Email</h3>
-                        <p class="text-gray-600">Create disposable email addresses for temporary inbox needs.</p>
-                    </a>
-
-                    <!-- KTP Generator -->
-                    <a href="ktp.html" class="integration-card bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer" data-name="ktp generator id card indonesia identity document" data-category="productivity">
-                        <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mb-4">
-                            <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"/>
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-semibold mb-2">KTP Generator</h3>
-                        <p class="text-gray-600">Generate sample Indonesian ID Card (KTP) images with customizable information.</p>
-                    </a>
-
-                    <!-- Novel Translator -->
-                    <a href="translate.html" class="integration-card bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer" data-name="novel translator english indonesian translation text language ai artificial intelligence nlp natural language processing machine translation" data-category="AI">
-                        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
-                            <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-semibold mb-2">Novel Translator (AI-Powered)</h3>
-                        <p class="text-gray-600">AI-powered tool to translate English novel text to Indonesian with natural language processing for smooth, context-aware translations.</p>
-                    </a>
-
-                    <!-- Text to Speech -->
-                    <a href="tts.html" class="integration-card bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer" data-name="text to speech tts voice audio ai artificial intelligence speech synthesis sound generator" data-category="AI">
-                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                            <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-semibold mb-2">Text to Speech (AI-Powered)</h3>
-                        <p class="text-gray-600">Convert text into natural-sounding speech using advanced AI voice synthesis technology .</p>
-                    </a>
-
+    <!-- Pagination -->
+    <div class="fixed-pagination">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col items-center space-y-2">
+                <div class="flex items-center space-x-2">
+                    <button id="prevPage" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        <span class="hidden sm:inline">Previous</span>
+                    </button>
                     
+                    <div class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md">
+                        <span id="pageInfo"></span>
+                    </div>
+                    
+                    <button id="nextPage" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span class="hidden sm:inline">Next</span>
+                        <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="text-sm text-gray-500">
+                    Showing <span id="itemsShowing" class="font-medium"></span> of <span id="totalItems" class="font-medium"></span> items
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        function searchTools() {
-            const searchInput = document.getElementById('searchBox').value.toLowerCase().trim();
-            const cards = document.querySelectorAll('.integration-card');
-            
-            if (searchInput === '') {
-                cards.forEach(card => card.classList.remove('hidden'));
-                return;
-            }
+        const ITEMS_PER_PAGE = 9; // Number of cards to show per page
+        let currentPage = 1;
+        let filteredCards = [];
+        let currentCategory = 'all';
 
-            cards.forEach(card => {
-                const searchData = card.getAttribute('data-name').toLowerCase();
-                const cardCategory = card.getAttribute('data-category').toLowerCase();
-                
-                // Split search input into words and check if ANY word matches
-                const searchWords = searchInput.split(/\s+/);
-                const matches = searchWords.some(word => 
-                    searchData.includes(word) || cardCategory === word
-                );
-                
-                if (matches) {
-                    card.classList.remove('hidden');
-                } else {
-                    card.classList.add('hidden');
-                }
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredCards.length / ITEMS_PER_PAGE);
+            const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+            const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, filteredCards.length);
+
+            // Update page info
+            document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages || 1}`;
+            
+            // Update items showing info
+            document.getElementById('itemsShowing').textContent = filteredCards.length > 0 ? `${startIndex + 1}-${endIndex}` : '0-0';
+            document.getElementById('totalItems').textContent = filteredCards.length;
+
+            // Update button states
+            document.getElementById('prevPage').disabled = currentPage === 1;
+            document.getElementById('nextPage').disabled = currentPage === totalPages || totalPages === 0;
+
+            // Hide all cards first
+            document.querySelectorAll('.integration-card').forEach(card => {
+                card.classList.add('hidden');
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+            });
+
+            // Show only filtered cards for current page
+            filteredCards.slice(startIndex, endIndex).forEach((card, index) => {
+                card.classList.remove('hidden');
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 50 * index);
             });
         }
 
+        function searchTools() {
+            const searchInput = document.getElementById('searchBox').value.toLowerCase().trim();
+            const cards = Array.from(document.querySelectorAll('.integration-card'));
+            
+            // Filter cards based on current category first
+            filteredCards = cards.filter(card => {
+                const cardCategory = card.getAttribute('data-category').toLowerCase();
+                return currentCategory === 'all' || cardCategory === currentCategory;
+            });
+            
+            // Then apply search filter if there's a search term
+            if (searchInput !== '') {
+                const searchWords = searchInput.split(/\s+/);
+                filteredCards = filteredCards.filter(card => {
+                    const searchData = card.getAttribute('data-name').toLowerCase();
+                    const cardCategory = card.getAttribute('data-category').toLowerCase();
+                    return searchWords.some(word => 
+                        searchData.includes(word) || cardCategory === word
+                    );
+                });
+            }
+
+            currentPage = 1;
+            updatePagination();
+        }
+
         function filterByCategory(category) {
-            const cards = document.querySelectorAll('.integration-card');
+            currentCategory = category.toLowerCase();
             const categoryItems = document.querySelectorAll('.category-item');
             
             // Update active category styling
@@ -223,40 +473,90 @@
                 }
             });
 
-            // Filter cards
+            // Reset search
+            document.getElementById('searchBox').value = '';
+            
+            // Filter cards based on category
+            const cards = Array.from(document.querySelectorAll('.integration-card'));
             if (category === 'all') {
-                cards.forEach(card => card.classList.remove('hidden'));
+                filteredCards = cards;
             } else {
-                cards.forEach(card => {
+                filteredCards = cards.filter(card => {
                     const cardCategory = card.getAttribute('data-category');
-                    if (cardCategory.toLowerCase() === category.toLowerCase()) {
-                        card.classList.remove('hidden');
-                    } else {
-                        card.classList.add('hidden');
-                    }
+                    return cardCategory.toLowerCase() === category.toLowerCase();
                 });
             }
+
+            currentPage = 1;
+            updatePagination();
         }
+
+        // Pagination event listeners
+        document.getElementById('prevPage').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                updatePagination();
+            }
+        });
+
+        document.getElementById('nextPage').addEventListener('click', () => {
+            const totalPages = Math.ceil(filteredCards.length / ITEMS_PER_PAGE);
+            if (currentPage < totalPages) {
+                currentPage++;
+                updatePagination();
+            }
+        });
 
         // Initialize search box
         document.getElementById('searchBox').addEventListener('input', searchTools);
 
-        // Handle category from URL hash when page loads
+        // Initialize pagination with 'all' category
         document.addEventListener('DOMContentLoaded', function() {
-            const hash = window.location.hash.slice(1); // Remove the # symbol
-            if (hash) {
-                filterByCategory(hash);
-            }
+            const hash = window.location.hash.slice(1);
+            filterByCategory(hash || 'all');
         });
 
         // Handle hash changes
         window.addEventListener('hashchange', function() {
             const hash = window.location.hash.slice(1);
-            if (hash) {
-                filterByCategory(hash);
+            filterByCategory(hash || 'all');
+        });
+
+        // Toggle Sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const body = document.body;
+
+            if (sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+                body.style.overflow = '';
             } else {
-                filterByCategory('all');
+                sidebar.classList.add('open');
+                overlay.classList.add('active');
+                body.style.overflow = 'hidden';
             }
+        }
+
+        // Close sidebar when clicking overlay
+        document.getElementById('overlay').addEventListener('click', (e) => {
+            if (e.target.id === 'overlay') {
+                toggleSidebar();
+            }
+        });
+
+        // Close sidebar when pressing Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.getElementById('sidebar').classList.contains('open')) {
+                toggleSidebar();
+            }
+        });
+
+        // Initialize mobile menu button
+        document.getElementById('mobileMenuBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleSidebar();
         });
     </script>
 </body>

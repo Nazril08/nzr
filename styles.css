@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* Common Navigation Styles */
 .nav-link {
     position: relative;
@@ -89,4 +90,97 @@
 .status-loading {
     background-color: #DBEAFE;
     color: #1E40AF;
+=======
+/* Common Navigation Styles */
+.nav-link {
+    position: relative;
+    color: #6B7280;
+    transition: color 0.3s;
+}
+.nav-link:hover {
+    color: #111827;
+}
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: #3B82F6;
+    transition: width 0.3s ease;
+}
+.nav-link:hover::after {
+    width: 100%;
+}
+.nav-link.active {
+    color: #111827;
+}
+.nav-link.active::after {
+    width: 100%;
+}
+
+/* Common Form Styles */
+.input-field {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #E5E7EB;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+.input-field:focus {
+    outline: none;
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Common Button Styles */
+.btn-primary {
+    background-color: #3B82F6;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+.btn-primary:hover {
+    background-color: #2563EB;
+}
+.btn-secondary {
+    background-color: #10B981;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+.btn-secondary:hover {
+    background-color: #059669;
+}
+
+/* Button Primary Styles */
+.button-primary {
+    background-color: #3B82F6;
+    color: white;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+.button-primary:hover {
+    background-color: #2563EB;
+}
+
+/* Status Colors */
+.status-success {
+    background-color: #D1FAE5;
+    color: #065F46;
+}
+.status-error {
+    background-color: #FEE2E2;
+    color: #991B1B;
+}
+.status-loading {
+    background-color: #DBEAFE;
+    color: #1E40AF;
+>>>>>>> 0d32383b86bec2a118954274b95c928bc94649ec
 } 

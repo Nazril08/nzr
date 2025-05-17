@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OCR Tool - Multi Tools</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="../../fe/tools/style.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
     <style>
+        /* Base styles */
         .card {
             transition: all 0.3s ease;
         }
@@ -18,18 +19,115 @@
         }
         .category-item:hover {
             background-color: #f3f4f6;
+            color: #2563eb;
         }
         .category-item.active {
-            background-color: #000;
+            background-color: #2563eb;
             color: white;
         }
-        .integration-card {
-            transition: all 0.3s ease;
-            display: block;
+
+        .logo {
+            padding: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #e5e7eb;
+            background: white;
         }
-        .integration-card.hidden {
-            display: none;
+
+        .categories-section {
+            padding: 1.5rem;
         }
+
+        .categories-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 1rem;
+        }
+
+        .category-item {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        /* Mobile styles */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: 100vh;
+                background: white;
+                transition: transform 0.3s ease-in-out;
+                transform: translateX(-100%);
+                z-index: 1000;
+                box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+            }
+            .logo {
+                position: relative;
+                display: block;
+                text-align: center;
+                border-bottom: 1px solid #e5e7eb;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+                left: 0;
+            }
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 999;
+                opacity: 0;
+                transition: opacity 0.3s ease-in-out;
+            }
+            .overlay.active {
+                display: block;
+                opacity: 1;
+            }
+            .main-content {
+                margin-left: 0 !important;
+                padding-top: 4rem;
+            }
+        }
+
+        /* Desktop styles */
+        @media (min-width: 769px) {
+            .logo {
+                position: relative;
+                border-bottom: 1px solid #e5e7eb;
+            }
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 256px;
+                height: 100vh;
+                overflow-y: auto;
+                background: white;
+                border-right: 1px solid #e5e7eb;
+            }
+            .main-content {
+                margin-left: 256px;
+            }
+            .mobile-menu-btn {
+                display: none;
+            }
+        }
+
         .file-input-wrapper {
             position: relative;
             overflow: hidden;
@@ -69,55 +167,64 @@
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
-    <!-- Navigation -->
-    <nav class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <h1 class="text-xl font-semibold text-gray-900">nzr-Multi Tools</h1>
-                    </div>
-                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                        <a href="index.html" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium">Home</a>
+    <!-- Mobile Menu Button -->
+    <button id="mobileMenuBtn" class="mobile-menu-btn fixed top-4 right-4 z-[1001] p-2 bg-white rounded-lg shadow-lg md:hidden">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+    </button>
+
+    <!-- Overlay -->
+    <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <div class="logo">
+            <span class="text-xl font-semibold text-gray-900">nzr</span>
+        </div>
+        <div class="categories-section">
+            <h2 class="categories-title">Categories</h2>
+            <div class="space-y-2">
+                <div class="category-item" onclick="filterByCategory('all')">All</div>
+                <div class="category-item active" onclick="filterByCategory('tools')">Tools</div>
+                <div class="category-item" onclick="filterByCategory('AI')">AI</div>
+                <div class="category-item" onclick="filterByCategory('downloader')">Downloader</div>
+                <div class="category-item" onclick="filterByCategory('stalk')">Stalk</div>
+                <div class="category-item" onclick="filterByCategory('generator')">Generator</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content min-h-screen pb-24">
+        <!-- Header -->
+        <div class="bg-white border-b sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <h1 class="text-xl font-bold">Integrations</h1>
+                    <div class="relative">
+                        <a href="index.html" class="text-gray-600 hover:text-gray-900">Back to Home</a>
                     </div>
                 </div>
             </div>
         </div>
-    </nav>
-    <div class="flex">
-        <!-- Categories Sidebar -->
-        <div class="w-64 bg-white h-screen fixed left-0 border-r">
-            <div class="p-6">
-                <h2 class="text-xl font-semibold mb-6">Categories</h2>
-                <div class="space-y-2">
-                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('all')">All</div>
-                    <div class="category-item active rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('tools')">Tools</div>
-                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('AI')">AI</div>
-                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('stalk')">Stalk</div>
-                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('generator')">Generator</div>
+
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <h1 class="text-2xl font-bold mb-6">OCR Tool</h1>
+
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <!-- Tips Section -->
+                <div class="bg-blue-50 rounded-lg p-4 mb-6">
+                    <h3 class="text-lg font-semibold text-blue-900 mb-2">Tips for Better Results:</h3>
+                    <ul class="text-sm space-y-2 text-blue-800">
+                        <li>• Use clear, well-lit images</li>
+                        <li>• Ensure text is properly focused</li>
+                        <li>• Avoid skewed or rotated text</li>
+                        <li>• Supported formats: JPG, PNG (max 5MB)</li>
+                    </ul>
                 </div>
-            </div>
-        </div>
 
-        <!-- Main Content -->
-        <div class="ml-64 flex-1 p-8">
-            <div class="max-w-4xl mx-auto">
-                <h1 class="text-2xl font-bold mb-6">OCR - Image to Text</h1>
-                
-                
-
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <!-- Tips Section -->
-                    <div class="bg-blue-50 rounded-lg p-4 mb-6">
-                        <h3 class="text-lg font-semibold text-blue-900 mb-2">Tips for Better Results:</h3>
-                        <ul class="text-sm space-y-2 text-blue-800">
-                            <li>• Use clear, well-lit images</li>
-                            <li>• Ensure text is properly focused</li>
-                            <li>• Avoid skewed or rotated text</li>
-                            <li>• Supported formats: JPG, PNG (max 5MB)</li>
-                        </ul>
-                    </div>
-
+                <div class="space-y-6">
                     <!-- Upload Section -->
                     <div class="space-y-4">
                         <div class="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 hover:border-blue-500 transition-colors">
@@ -169,13 +276,28 @@
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="be/tools/ocr.js"></script>
     <script>
+        // Sidebar Toggle Function
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            
+            if (sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+            } else {
+                sidebar.classList.add('open');
+                overlay.classList.add('active');
+            }
+        }
+
+        // Mobile Menu Button Event
+        document.getElementById('mobileMenuBtn').addEventListener('click', toggleSidebar);
+        document.getElementById('overlay').addEventListener('click', toggleSidebar);
+
         function filterByCategory(category) {
             const categoryItems = document.querySelectorAll('.category-item');
             
-            // Update active category styling
             categoryItems.forEach(item => {
                 if (item.textContent.toLowerCase() === category.toLowerCase() || 
                     (category === 'all' && item.textContent === 'All')) {
@@ -185,7 +307,6 @@
                 }
             });
 
-            // Redirect to index.html with the selected category
             if (category === 'all') {
                 window.location.href = 'index.html';
             } else {
@@ -205,5 +326,7 @@
             });
         });
     </script>
+    <script src="js/common.js"></script>
+    <script src="be/tools/ocr.js"></script>
 </body>
 </html> 

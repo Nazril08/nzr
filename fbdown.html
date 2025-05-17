@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Generator - Multi Tools</title>
+    <title>Facebook Video Downloader - Multi Tools</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
     <style>
@@ -57,6 +57,64 @@
             font-weight: 500;
         }
 
+        /* Form styles */
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+            transition: all 0.15s ease-in-out;
+            font-size: 0.875rem;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        /* Button styles */
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+            transform: translateY(-1px);
+        }
+        .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background-color: #10B981;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-secondary:hover {
+            background-color: #059669;
+            transform: translateY(-1px);
+        }
+        .btn-secondary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
         /* Mobile styles */
         @media (max-width: 768px) {
             .sidebar {
@@ -102,6 +160,16 @@
                 margin-left: 0 !important;
                 padding-top: 4rem;
             }
+            .content-container {
+                padding: 1rem;
+            }
+            .button-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .button-container button {
+                width: 100%;
+            }
         }
 
         /* Desktop styles */
@@ -126,29 +194,42 @@
             .mobile-menu-btn {
                 display: none;
             }
+            .btn-primary, .btn-secondary {
+                width: auto;
+            }
+            .button-container {
+                flex-direction: row;
+            }
         }
 
-        .btn-primary {
-            background-color: #3B82F6;
-            color: white;
-            padding: 0.75rem 1.5rem;
+        /* Loading spinner */
+        .loading-spinner {
+            border-width: 3px;
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            border-color: #e5e7eb;
+            border-top-color: #2563eb;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Video result styles */
+        .video-result {
+            border: 1px solid #e5e7eb;
             border-radius: 0.5rem;
-            font-weight: 500;
-            transition: all 0.3s;
+            overflow: hidden;
         }
-        .btn-primary:hover {
-            background-color: #2563EB;
+        .video-thumbnail {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
         }
-        .btn-secondary {
-            background-color: #10B981;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-        .btn-secondary:hover {
-            background-color: #059669;
+        .video-info {
+            padding: 1rem;
+            background: #f9fafb;
         }
     </style>
 </head>
@@ -161,7 +242,7 @@
     </button>
 
     <!-- Overlay -->
-    <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+    <div id="overlay" class="overlay"></div>
 
     <!-- Sidebar -->
     <div id="sidebar" class="sidebar">
@@ -174,9 +255,9 @@
                 <div class="category-item" onclick="filterByCategory('all')">All</div>
                 <div class="category-item" onclick="filterByCategory('tools')">Tools</div>
                 <div class="category-item" onclick="filterByCategory('AI')">AI</div>
-                <div class="category-item" onclick="filterByCategory('downloader')">Downloader</div>
+                <div class="category-item active" onclick="filterByCategory('downloader')">Downloader</div>
                 <div class="category-item" onclick="filterByCategory('stalk')">Stalk</div>
-                <div class="category-item active" onclick="filterByCategory('generator')">Generator</div>
+                <div class="category-item" onclick="filterByCategory('generator')">Generator</div>
             </div>
         </div>
     </div>
@@ -195,52 +276,56 @@
             </div>
         </div>
 
+        <!-- Content -->
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <h1 class="text-2xl font-bold mb-6">QR Code Generator</h1>
+            <!-- Tips Section -->
+            <div class="bg-blue-50 rounded-lg p-4 mb-6">
+                <h3 class="text-lg font-semibold text-blue-900 mb-2">Tips for Downloading:</h3>
+                <ul class="text-sm space-y-2 text-blue-800">
+                    <li>• Use the complete Facebook video URL</li>
+                    <li>• Make sure the video is publicly accessible</li>
+                    <li>• Supports both SD and HD quality (when available)</li>
+                    <li>• Works with Facebook Watch and shared videos</li>
+                </ul>
+            </div>
 
             <div class="bg-white rounded-lg shadow-sm p-6">
-                <!-- Tips Section -->
-                <div class="bg-blue-50 rounded-lg p-4 mb-6">
-                    <h3 class="text-lg font-semibold text-blue-900 mb-2">Tips for QR Codes:</h3>
-                    <ul class="text-sm space-y-2 text-blue-800">
-                        <li>• Use short URLs when possible</li>
-                        <li>• Test the QR code after generating</li>
-                        <li>• Keep text content concise</li>
-                        <li>• Make sure URLs include http:// or https://</li>
-                    </ul>
-                </div>
-
-                <!-- Input Form -->
-                <div class="space-y-4">
-                    <div>
-                        <label for="text" class="block text-sm font-medium text-gray-700 mb-2">Enter Text or URL</label>
-                        <input type="text" 
-                               id="text" 
-                               class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                               placeholder="Enter text or URL to convert">
-                    </div>
-
-                    <div class="flex justify-center">
-                        <button id="generateBtn" class="btn-primary">
-                            Generate QR Code
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Status Message -->
-                <div id="status" class="hidden mt-4 text-center p-3 rounded-lg"></div>
-
-                <!-- Result Section -->
-                <div id="result" class="hidden mt-6">
-                    <div class="border-t pt-6">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Your QR Code</h3>
-                        <div class="flex justify-center">
-                            <img id="qrImage" class="max-w-full rounded-lg shadow-lg" alt="QR Code">
+                <div class="space-y-6">
+                    <!-- Input Form -->
+                    <div class="space-y-4">
+                        <div>
+                            <label for="videoUrl" class="block text-sm font-medium text-gray-700 mb-1">Facebook Video URL</label>
+                            <input type="text" id="videoUrl" class="form-input" placeholder="https://www.facebook.com/share/v/...">
                         </div>
-                        <div class="mt-4 flex justify-center">
-                            <button id="downloadBtn" class="btn-secondary">
-                                Download QR Code
+                        
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button id="downloadBtn" class="btn-primary">
+                                Download Video
                             </button>
+                        </div>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="loadingState" class="hidden">
+                        <div class="flex items-center justify-center space-x-2">
+                            <div class="loading-spinner"></div>
+                            <span class="text-gray-600">Processing video...</span>
+                        </div>
+                    </div>
+
+                    <!-- Result Section -->
+                    <div id="resultSection" class="hidden space-y-4">
+                        <div class="video-result">
+                            <div class="video-info space-y-4">
+                                <div class="flex flex-col sm:flex-row gap-4">
+                                    <button id="downloadSD" class="btn-primary">
+                                        Download SD Quality
+                                    </button>
+                                    <button id="downloadHD" class="btn-secondary">
+                                        Download HD Quality
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -248,28 +333,45 @@
         </div>
     </div>
 
+    <script src="be/downloader/fbdown.js"></script>
     <script>
         // Sidebar Toggle Function
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('overlay');
+            const body = document.body;
             
             if (sidebar.classList.contains('open')) {
                 sidebar.classList.remove('open');
                 overlay.classList.remove('active');
+                body.style.overflow = '';
             } else {
                 sidebar.classList.add('open');
                 overlay.classList.add('active');
+                body.style.overflow = 'hidden';
             }
         }
 
         // Mobile Menu Button Event
-        document.getElementById('mobileMenuBtn').addEventListener('click', toggleSidebar);
+        document.getElementById('mobileMenuBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleSidebar();
+        });
+
+        // Close sidebar when clicking overlay
         document.getElementById('overlay').addEventListener('click', toggleSidebar);
+
+        // Close sidebar when pressing Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.getElementById('sidebar').classList.contains('open')) {
+                toggleSidebar();
+            }
+        });
 
         function filterByCategory(category) {
             const categoryItems = document.querySelectorAll('.category-item');
             
+            // Update active category styling
             categoryItems.forEach(item => {
                 if (item.textContent.toLowerCase() === category.toLowerCase() || 
                     (category === 'all' && item.textContent === 'All')) {
@@ -279,6 +381,7 @@
                 }
             });
 
+            // Redirect to index.html with the selected category
             if (category === 'all') {
                 window.location.href = 'index.html';
             } else {
@@ -290,7 +393,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const categoryItems = document.querySelectorAll('.category-item');
             categoryItems.forEach(item => {
-                if (item.textContent === 'Generator') {
+                if (item.textContent === 'Downloader') {
                     item.classList.add('active');
                 } else {
                     item.classList.remove('active');
@@ -298,8 +401,5 @@
             });
         });
     </script>
-    <script src="Services/ratelimiter.js"></script>
-    <script src="Services/cache.js"></script>
-    <script src="be/tools/qr.js"></script>
 </body>
 </html> 

@@ -1,3 +1,58 @@
+// Rate limiter configuration
+const rateLimiter = {
+    maxRequests: 5, // Maximum requests per timeWindow
+    timeWindow: 60000, // Time window in milliseconds (1 minute)
+    requests: [],
+    
+    checkLimit: function() {
+        const now = Date.now();
+        // Remove requests older than timeWindow
+        this.requests = this.requests.filter(time => now - time < this.timeWindow);
+        
+        if (this.requests.length >= this.maxRequests) {
+            const oldestRequest = this.requests[0];
+            const timeToWait = Math.ceil((this.timeWindow - (now - oldestRequest)) / 1000);
+            throw new Error(`Rate limit exceeded. Please wait ${timeToWait} seconds before trying again.`);
+        }
+        
+        this.requests.push(now);
+        return true;
+    }
+};
+
+// Cache configuration
+const cache = {
+    data: new Map(),
+    maxSize: 50, // Maximum number of cached items
+    timeToLive: 3600000, // Cache TTL in milliseconds (1 hour)
+    
+    set: function(key, value) {
+        if (this.data.size >= this.maxSize) {
+            // Remove oldest entry if cache is full
+            const firstKey = this.data.keys().next().value;
+            this.data.delete(firstKey);
+        }
+        
+        this.data.set(key, {
+            value: value,
+            timestamp: Date.now()
+        });
+    },
+    
+    get: function(key) {
+        const item = this.data.get(key);
+        if (!item) return null;
+        
+        // Check if cache entry has expired
+        if (Date.now() - item.timestamp > this.timeToLive) {
+            this.data.delete(key);
+            return null;
+        }
+        
+        return item.value;
+    }
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     const searchBtn = document.getElementById('searchBtn');
     const loadingDiv = document.getElementById('loading');
@@ -15,12 +70,31 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Show loading state
-        loadingDiv.classList.remove('hidden');
-        resultDiv.classList.add('hidden');
-        errorDiv.classList.add('hidden');
-
         try {
+            // Check rate limit
+            rateLimiter.checkLimit();
+
+            // Check cache first
+            const cacheKey = `${uid}-${apiKey}`;
+            const cachedResult = cache.get(cacheKey);
+            if (cachedResult) {
+                // Update UI with cached data
+                updatePlayerInfo(cachedResult.player);
+                updatePlayerStats(cachedResult.playerStatistics);
+                updateExplorationProgress(cachedResult.player.detail.exploration);
+                updateSpiralAbyss(cachedResult.player.detail.spiralAbyss);
+
+                // Show results
+                loadingDiv.classList.add('hidden');
+                resultDiv.classList.remove('hidden');
+                return;
+            }
+
+            // Show loading state
+            loadingDiv.classList.remove('hidden');
+            resultDiv.classList.add('hidden');
+            errorDiv.classList.add('hidden');
+
             const response = await fetch(`https://fastrestapis.fasturl.cloud/stalk/genshin/advanced?uid=${uid}`, {
                 method: 'GET',
                 headers: {
@@ -35,6 +109,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error(data.content || 'Failed to fetch player data');
             }
 
+            // Store in cache
+            cache.set(cacheKey, data.result);
+
             // Update UI with player data
             updatePlayerInfo(data.result.player);
             updatePlayerStats(data.result.playerStatistics);
@@ -45,7 +122,11 @@ document.addEventListener('DOMContentLoaded', function() {
             loadingDiv.classList.add('hidden');
             resultDiv.classList.remove('hidden');
         } catch (error) {
-            showError(error.message);
+            if (error.message.includes('Rate limit exceeded')) {
+                showError(error.message);
+            } else {
+                showError(error.message);
+            }
             loadingDiv.classList.add('hidden');
         }
     }

@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
     <style>
+        /* Base styles */
         .card {
             transition: all 0.3s ease;
         }
@@ -18,18 +19,115 @@
         }
         .category-item:hover {
             background-color: #f3f4f6;
+            color: #2563eb;
         }
         .category-item.active {
-            background-color: #000;
+            background-color: #2563eb;
             color: white;
         }
-        .integration-card {
-            transition: all 0.3s ease;
-            display: block;
+
+        .logo {
+            padding: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #e5e7eb;
+            background: white;
         }
-        .integration-card.hidden {
-            display: none;
+
+        .categories-section {
+            padding: 1.5rem;
         }
+
+        .categories-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 1rem;
+        }
+
+        .category-item {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        /* Mobile styles */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: 100vh;
+                background: white;
+                transition: transform 0.3s ease-in-out;
+                transform: translateX(-100%);
+                z-index: 1000;
+                box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+            }
+            .logo {
+                position: relative;
+                display: block;
+                text-align: center;
+                border-bottom: 1px solid #e5e7eb;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+                left: 0;
+            }
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 999;
+                opacity: 0;
+                transition: opacity 0.3s ease-in-out;
+            }
+            .overlay.active {
+                display: block;
+                opacity: 1;
+            }
+            .main-content {
+                margin-left: 0 !important;
+                padding-top: 4rem;
+            }
+        }
+
+        /* Desktop styles */
+        @media (min-width: 769px) {
+            .logo {
+                position: relative;
+                border-bottom: 1px solid #e5e7eb;
+            }
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 256px;
+                height: 100vh;
+                overflow-y: auto;
+                background: white;
+                border-right: 1px solid #e5e7eb;
+            }
+            .main-content {
+                margin-left: 256px;
+            }
+            .mobile-menu-btn {
+                display: none;
+            }
+        }
+
         .stat-card {
             background: rgba(255, 255, 255, 0.9);
             border-radius: 0.5rem;
@@ -54,63 +152,73 @@
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
-    <!-- Navigation -->
-    <nav class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <h1 class="text-xl font-semibold text-gray-900">nzr-Multi Tools</h1>
-                    </div>
-                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                        <a href="index.html" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium">Home</a>
+    <!-- Mobile Menu Button -->
+    <button id="mobileMenuBtn" class="mobile-menu-btn fixed top-4 right-4 z-[1001] p-2 bg-white rounded-lg shadow-lg md:hidden">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+    </button>
+
+    <!-- Overlay -->
+    <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <div class="logo">
+            <span class="text-xl font-semibold text-gray-900">nzr</span>
+        </div>
+        <div class="categories-section">
+            <h2 class="categories-title">Categories</h2>
+            <div class="space-y-2">
+                <div class="category-item" onclick="filterByCategory('all')">All</div>
+                <div class="category-item" onclick="filterByCategory('tools')">Tools</div>
+                <div class="category-item" onclick="filterByCategory('AI')">AI</div>
+                <div class="category-item" onclick="filterByCategory('downloader')">Downloader</div>
+                <div class="category-item active" onclick="filterByCategory('stalk')">Stalk</div>
+                <div class="category-item" onclick="filterByCategory('generator')">Generator</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content min-h-screen pb-24">
+        <!-- Header -->
+        <div class="bg-white border-b sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <h1 class="text-xl font-bold">Integrations</h1>
+                    <div class="relative">
+                        <a href="index.html" class="text-gray-600 hover:text-gray-900">Back to Home</a>
                     </div>
                 </div>
             </div>
         </div>
-    </nav>
 
-    <div class="flex">
-        <!-- Categories Sidebar -->
-        <div class="w-64 bg-white h-screen fixed left-0 border-r">
-            <div class="p-6">
-                <h2 class="text-xl font-semibold mb-6">Categories</h2>
-                <div class="space-y-2">
-                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('all')">All</div>
-                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('tools')">Tools</div>
-                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('AI')">AI</div>
-                    <div class="category-item active rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('stalk')">Stalk</div>
-                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('generator')">Generator</div>
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <h1 class="text-2xl font-bold mb-6">Genshin Impact Player Stalker</h1>
+
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <!-- Tips Section -->
+                <div class="bg-blue-50 rounded-lg p-4 mb-6">
+                    <h3 class="text-lg font-semibold text-blue-900 mb-2">Tips:</h3>
+                    <ul class="text-sm space-y-2 text-blue-800">
+                        <li>• Find your UID in your Genshin Impact profile</li>
+                        <li>• UID is a 9-digit number</li>
+                        <li>• Make sure your profile is set to public</li>
+                        <li>• API Key is optional but recommended for more requests</li>
+                    </ul>
                 </div>
-            </div>
-        </div>
 
-        <!-- Main Content -->
-        <div class="ml-64 flex-1 p-8">
-            <div class="max-w-4xl mx-auto">
-                <h1 class="text-2xl font-bold mb-6">Genshin Impact Player Stalker</h1>
-
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <!-- Tips Section -->
-                    <div class="bg-blue-50 rounded-lg p-4 mb-6">
-                        <h3 class="text-lg font-semibold text-blue-900 mb-2">How to Use:</h3>
-                        <ul class="text-sm space-y-2 text-blue-800">
-                            <li>• Enter the player's UID to view their profile</li>
-                            <li>• UID can be found in-game in the profile section</li>
-                            <li>• Data includes achievements, exploration progress, and more</li>
-                            <li>• Optional: Use API key for protected endpoints</li>
-                        </ul>
-                    </div>
-
+                <div class="space-y-6">
                     <!-- Input Form -->
-                    <div class="space-y-6">
+                    <div class="space-y-4">
                         <div>
-                            <label for="uid" class="block text-sm font-medium text-gray-700">Player UID</label>
+                            <label for="uid" class="block text-sm font-medium text-gray-700">UID</label>
                             <input type="text" id="uid" class="mt-1 w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter Genshin Impact UID">
                         </div>
                         <div>
                             <label for="apiKey" class="block text-sm font-medium text-gray-700">API Key (Optional)</label>
-                            <input type="text" id="apiKey" class="mt-1 w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter API key for protected endpoints">
+                            <input type="text" id="apiKey" class="mt-1 w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter API Key for more requests">
                         </div>
                         <button id="searchBtn" class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors">
                             Search Player
@@ -118,88 +226,99 @@
                     </div>
 
                     <!-- Loading State -->
-                    <div id="loading" class="hidden mt-6">
+                    <div id="loading" class="hidden">
                         <div class="flex justify-center items-center py-8">
                             <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
                         </div>
                         <p class="text-center text-gray-600">Fetching player data...</p>
                     </div>
 
+                    <!-- Error Message -->
+                    <div id="error" class="hidden bg-red-100 text-red-700 p-4 rounded-lg"></div>
+
                     <!-- Result Section -->
-                    <div id="result" class="hidden mt-6">
-                        <div class="border-t pt-6">
-                            <!-- Player Info -->
-                            <div class="flex items-start space-x-4 mb-6">
-                                <div class="flex-shrink-0">
-                                    <img id="playerAvatar" class="w-20 h-20 rounded-full" alt="Player Avatar">
-                                </div>
+                    <div id="result" class="hidden">
+                        <!-- Player Info -->
+                        <div class="border-t pt-4">
+                            <div class="flex items-center space-x-4">
+                                <img id="playerAvatar" class="w-16 h-16 rounded-full" src="" alt="Player Avatar">
                                 <div>
-                                    <h3 id="playerName" class="text-xl font-bold text-gray-900"></h3>
-                                    <p id="playerUID" class="text-gray-500"></p>
-                                    <div class="mt-2">
-                                        <span id="playerLevel" class="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded"></span>
-                                        <span id="playerServer" class="ml-2 bg-green-100 text-green-800 text-sm font-medium px-2.5 py-0.5 rounded"></span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Stats Grid -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                                <div class="stat-card">
-                                    <h4 class="text-sm font-medium text-gray-500">Achievements</h4>
-                                    <div class="flex items-center justify-between mt-1">
-                                        <span id="achievementCount" class="text-2xl font-bold text-gray-900"></span>
-                                        <div class="w-32">
-                                            <div class="progress-bar">
-                                                <div id="achievementProgress" class="progress-fill"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="stat-card">
-                                    <h4 class="text-sm font-medium text-gray-500">Characters</h4>
-                                    <div class="flex items-center justify-between mt-1">
-                                        <span id="characterCount" class="text-2xl font-bold text-gray-900"></span>
-                                        <div class="w-32">
-                                            <div class="progress-bar">
-                                                <div id="characterProgress" class="progress-fill"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Exploration Progress -->
-                            <div class="bg-gray-50 rounded-lg p-4">
-                                <h4 class="text-lg font-semibold text-gray-900 mb-4">Exploration Progress</h4>
-                                <div id="explorationProgress" class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                    <!-- Exploration data will be inserted here -->
-                                </div>
-                            </div>
-
-                            <!-- Spiral Abyss -->
-                            <div class="mt-6">
-                                <h4 class="text-lg font-semibold text-gray-900 mb-4">Spiral Abyss Progress</h4>
-                                <div id="spiralAbyssInfo" class="bg-gray-50 rounded-lg p-4">
-                                    <!-- Spiral Abyss data will be inserted here -->
+                                    <h3 id="playerName" class="text-lg font-semibold"></h3>
+                                    <p id="playerUID" class="text-sm text-gray-500"></p>
+                                    <p id="playerLevel" class="text-sm text-gray-500"></p>
+                                    <p id="playerServer" class="text-sm text-gray-500"></p>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Error Message -->
-                    <div id="error" class="hidden mt-6 bg-red-50 text-red-700 p-4 rounded-lg"></div>
+                        <!-- Statistics -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                            <!-- Achievements -->
+                            <div class="stat-card">
+                                <h4 class="text-sm font-medium text-gray-500">Achievements</h4>
+                                <div class="flex items-center justify-between mt-1">
+                                    <span id="achievementCount" class="text-lg font-bold text-gray-900"></span>
+                                    <div class="w-24">
+                                        <div class="progress-bar">
+                                            <div id="achievementProgress" class="progress-fill"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Characters -->
+                            <div class="stat-card">
+                                <h4 class="text-sm font-medium text-gray-500">Characters</h4>
+                                <div class="flex items-center justify-between mt-1">
+                                    <span id="characterCount" class="text-lg font-bold text-gray-900"></span>
+                                    <div class="w-24">
+                                        <div class="progress-bar">
+                                            <div id="characterProgress" class="progress-fill"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Exploration Progress -->
+                        <div class="mt-6">
+                            <h3 class="text-lg font-semibold mb-4">Exploration Progress</h3>
+                            <div id="explorationProgress" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+                        </div>
+
+                        <!-- Spiral Abyss -->
+                        <div class="mt-6">
+                            <h3 class="text-lg font-semibold mb-4">Spiral Abyss</h3>
+                            <div id="spiralAbyssInfo" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="be/tools/genshin.js"></script>
     <script>
+        // Sidebar Toggle Function
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            
+            if (sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+            } else {
+                sidebar.classList.add('open');
+                overlay.classList.add('active');
+            }
+        }
+
+        // Mobile Menu Button Event
+        document.getElementById('mobileMenuBtn').addEventListener('click', toggleSidebar);
+        document.getElementById('overlay').addEventListener('click', toggleSidebar);
+
         function filterByCategory(category) {
             const categoryItems = document.querySelectorAll('.category-item');
             
-            // Update active category styling
             categoryItems.forEach(item => {
                 if (item.textContent.toLowerCase() === category.toLowerCase() || 
                     (category === 'all' && item.textContent === 'All')) {
@@ -209,7 +328,6 @@
                 }
             });
 
-            // Redirect to index.html with the selected category
             if (category === 'all') {
                 window.location.href = 'index.html';
             } else {
@@ -229,5 +347,8 @@
             });
         });
     </script>
+    <script src="js/common.js"></script>
+    <script src="be/tools/genshin.js"></script>
 </body>
+</html> 
 </html> 

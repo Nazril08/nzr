@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Image Generator - Multi Tools</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <style>
+        /* Base styles */
+        .card {
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .category-item {
+            transition: all 0.2s ease;
+        }
+        .category-item:hover {
+            background-color: #f3f4f6;
+        }
+        .category-item.active {
+            background-color: #000;
+            color: white;
+        }
+
+        .logo {
+            padding: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #e5e7eb;
+            background: white;
+        }
+
+        .categories-section {
+            padding: 1.5rem;
+        }
+
+        .categories-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 1rem;
+        }
+
+        .category-item {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        /* Mobile styles */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: 100vh;
+                background: white;
+                transition: transform 0.3s ease-in-out;
+                transform: translateX(-100%);
+                z-index: 1000;
+                box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+            }
+            .logo {
+                position: relative;
+                display: block;
+                text-align: center;
+                border-bottom: 1px solid #e5e7eb;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+                left: 0;
+            }
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 999;
+                opacity: 0;
+                transition: opacity 0.3s ease-in-out;
+            }
+            .overlay.active {
+                display: block;
+                opacity: 1;
+            }
+            .main-content {
+                margin-left: 0 !important;
+                padding-top: 4rem;
+            }
+        }
+
+        /* Desktop styles */
+        @media (min-width: 769px) {
+            .logo {
+                position: relative;
+                border-bottom: 1px solid #e5e7eb;
+            }
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 256px;
+                height: 100vh;
+                overflow-y: auto;
+                background: white;
+                border-right: 1px solid #e5e7eb;
+            }
+            .main-content {
+                margin-left: 256px;
+            }
+            .mobile-menu-btn {
+                display: none;
+            }
+        }
+
+        .preview-container {
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            background-color: #f9fafb;
+            min-height: 300px;
+        }
+        .preview-container img {
+            max-width: 100%;
+            max-height: 512px;
+            object-fit: contain;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+            transition: border-color 0.15s ease-in-out;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn-primary {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            background-color: #3b82f6;
+            color: white;
+            font-weight: 500;
+            transition: all 0.15s ease-in-out;
+            width: 100%;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+        .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .loading-spinner {
+            border-width: 3px;
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            border-color: #e5e7eb;
+            border-top-color: #3b82f6;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .range-slider {
+            width: 100%;
+            margin: 10px 0;
+        }
+        .range-value {
+            text-align: center;
+            font-size: 0.875rem;
+            color: #6B7280;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Mobile Menu Button -->
+    <button id="mobileMenuBtn" class="mobile-menu-btn fixed top-4 right-4 z-[1001] p-2 bg-white rounded-lg shadow-lg md:hidden">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+    </button>
+
+    <!-- Overlay -->
+    <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <div class="logo">
+            <span class="text-xl font-semibold text-gray-900">nzr</span>
+        </div>
+        <div class="categories-section">
+            <h2 class="categories-title">Categories</h2>
+            <div class="space-y-2">
+                <div class="category-item" onclick="filterByCategory('all')">All</div>
+                <div class="category-item" onclick="filterByCategory('tools')">Tools</div>
+                <div class="category-item active" onclick="filterByCategory('AI')">AI</div>
+                <div class="category-item" onclick="filterByCategory('downloader')">Downloader</div>
+                <div class="category-item" onclick="filterByCategory('stalk')">Stalk</div>
+                <div class="category-item" onclick="filterByCategory('generator')">Generator</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content min-h-screen pb-24">
+        <!-- Header -->
+        <div class="bg-white border-b sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <h1 class="text-xl font-bold">Integrations</h1>
+                    <div class="relative">
+                        <a href="index.html" class="text-gray-600 hover:text-gray-900">Back to Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <h1 class="text-2xl font-bold mb-6">AI Image Generator</h1>
+
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <!-- Tips Section -->
+                <div class="bg-blue-50 rounded-lg p-4 mb-6">
+                    <h3 class="text-lg font-semibold text-blue-900 mb-2">Tips for Best Results:</h3>
+                    <ul class="text-sm space-y-2 text-blue-800">
+                        <li>• Be specific and detailed in your prompt description</li>
+                        <li>• You can use a reference image to guide the style</li>
+                        <li>• Adjust creativity level to control variation from reference</li>
+                        <li>• Higher resolution may take longer to generate</li>
+                    </ul>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Input Form -->
+                    <div class="space-y-4">
+                        <div>
+                            <label for="prompt" class="block text-sm font-medium text-gray-700 mb-1">Image Description</label>
+                            <textarea id="prompt" class="form-input" rows="3" placeholder="Describe what you want to generate (e.g., A majestic lion in a sunset)"></textarea>
+                        </div>
+                        <div>
+                            <label for="reffImage" class="block text-sm font-medium text-gray-700 mb-1">Reference Image URL (Optional)</label>
+                            <input type="text" id="reffImage" class="form-input" placeholder="Enter URL of a reference image">
+                        </div>
+                        <div>
+                            <label for="style" class="block text-sm font-medium text-gray-700 mb-1">Style</label>
+                            <select id="style" class="form-input">
+                                <option value="AnimageModel">Animage Model</option>
+                                <option value="RealisticModel">Realistic Model</option>
+                                <option value="Cute blind box">Cute blind box</option>
+                                <option value="Fantasy mecha">Fantasy mecha</option>
+                                <option value="Story book illustration">Story book illustration</option>
+                                <option value="Children picture book illustration">Children picture book illustration</option>
+                                <option value="Q version simple drawing">Q version simple drawing</option>
+                                <option value="Ink landscape">Ink landscape</option>
+                                <option value="Ink painting">Ink painting</option>
+                                <option value="Sketch style">Sketch style</option>
+                                <option value="Enhanced realism">Enhanced realism</option>
+                                <option value="Oil painting">Oil painting</option>
+                                <option value="3D character">3D character</option>
+                                <option value="3D Pixar">3D Pixar</option>
+                                <option value="Chinese scenery">Chinese scenery</option>
+                                <option value="Beautiful scenery">Beautiful scenery</option>
+                                <option value="Minimalist LOGO">Minimalist LOGO</option>
+                                <option value="Advanced LOGO">Advanced LOGO</option>
+                                <option value="E-commerce products">E-commerce products</option>
+                                <option value="Modern Nordic">Modern Nordic</option>
+                                <option value="General interior design">General interior design</option>
+                                <option value="Light luxury style interior">Light luxury style interior</option>
+                                <option value="Modern architecture">Modern architecture</option>
+                                <option value="Chinese style flat illustration">Chinese style flat illustration</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="width" class="block text-sm font-medium text-gray-700">Width</label>
+                                <select id="width" class="form-input">
+                                    <option value="512">512px</option>
+                                    <option value="768">768px</option>
+                                    <option value="1024" selected>1024px</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="height" class="block text-sm font-medium text-gray-700">Height</label>
+                                <select id="height" class="form-input">
+                                    <option value="512">512px</option>
+                                    <option value="768">768px</option>
+                                    <option value="1024" selected>1024px</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="creativity" class="block text-sm font-medium text-gray-700">Creativity Level</label>
+                            <input type="range" id="creativity" min="0" max="1" step="0.1" value="0.5" class="range-slider">
+                            <div class="range-value">0.5</div>
+                        </div>
+
+                        <button id="generateBtn" class="btn-primary">
+                            Generate Image
+                        </button>
+                    </div>
+
+                    <!-- Status Message -->
+                    <div id="status" class="hidden text-center p-3 rounded-lg"></div>
+
+                    <!-- Loading State -->
+                    <div id="loading" class="hidden">
+                        <div class="flex justify-center items-center py-8">
+                            <div class="loading-spinner"></div>
+                        </div>
+                        <p class="text-center text-gray-600">Generating image...</p>
+                    </div>
+
+                    <!-- Result Section -->
+                    <div id="result" class="hidden">
+                        <div class="border-t pt-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Generated Image</h3>
+                            <div class="relative w-full max-w-2xl mx-auto">
+                                <div class="aspect-square">
+                                    <img id="resultImage" class="rounded-lg shadow-lg w-full h-full object-contain" alt="Generated image">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="be/ai/aiimage.js"></script>
+</body>
+</html> 

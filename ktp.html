@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
     <style>
+        /* Base styles */
         .card {
             transition: all 0.3s ease;
         }
@@ -18,10 +19,113 @@
         }
         .category-item:hover {
             background-color: #f3f4f6;
+            color: #2563eb;
         }
         .category-item.active {
-            background-color: #000;
+            background-color: #2563eb;
             color: white;
+        }
+
+        .logo {
+            padding: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #e5e7eb;
+            background: white;
+        }
+
+        .categories-section {
+            padding: 1.5rem;
+        }
+
+        .categories-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 1rem;
+        }
+
+        .category-item {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        /* Mobile styles */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: 100vh;
+                background: white;
+                transition: transform 0.3s ease-in-out;
+                transform: translateX(-100%);
+                z-index: 1000;
+                box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+            }
+            .logo {
+                position: relative;
+                display: block;
+                text-align: center;
+                border-bottom: 1px solid #e5e7eb;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+                left: 0;
+            }
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 999;
+                opacity: 0;
+                transition: opacity 0.3s ease-in-out;
+            }
+            .overlay.active {
+                display: block;
+                opacity: 1;
+            }
+            .main-content {
+                margin-left: 0 !important;
+                padding-top: 4rem;
+            }
+        }
+
+        /* Desktop styles */
+        @media (min-width: 769px) {
+            .logo {
+                position: relative;
+                border-bottom: 1px solid #e5e7eb;
+            }
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 256px;
+                height: 100vh;
+                overflow-y: auto;
+                background: white;
+                border-right: 1px solid #e5e7eb;
+            }
+            .main-content {
+                margin-left: 256px;
+            }
+            .mobile-menu-btn {
+                display: none;
+            }
         }
         .integration-card {
             transition: all 0.3s ease;
@@ -50,6 +154,7 @@
             border-radius: 0.5rem;
             font-weight: 500;
             transition: all 0.3s;
+            width: 100%;
         }
         .btn-primary:hover {
             background-color: #2563EB;
@@ -61,164 +166,187 @@
             border-radius: 0.5rem;
             font-weight: 500;
             transition: all 0.3s;
+            width: 100%;
         }
         .btn-secondary:hover {
             background-color: #059669;
         }
+        @media (max-width: 640px) {
+            .content-container {
+                padding: 1rem;
+            }
+            .p-6 {
+                padding: 1.25rem;
+            }
+            .grid-cols-1 {
+                grid-template-columns: 1fr;
+            }
+            #ktpImage {
+                max-width: 100%;
+                height: auto;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
-    <!-- Navigation -->
-    <nav class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <h1 class="text-xl font-semibold text-gray-900">nzr-Multi Tools</h1>
-                    </div>
-                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                        <a href="index.html" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium">Home</a>
+    <!-- Mobile Menu Button -->
+    <button id="mobileMenuBtn" class="mobile-menu-btn fixed top-4 right-4 z-[1001] p-2 bg-white rounded-lg shadow-lg md:hidden">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+    </button>
+
+    <!-- Overlay -->
+    <div id="overlay" class="overlay"></div>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <div class="logo">
+            <span class="text-xl font-semibold text-gray-900">nzr</span>
+        </div>
+        <div class="categories-section">
+            <h2 class="categories-title">Categories</h2>
+            <div class="space-y-2">
+                <div class="category-item" onclick="filterByCategory('all')">All</div>
+                <div class="category-item" onclick="filterByCategory('tools')">Tools</div>
+                <div class="category-item" onclick="filterByCategory('AI')">AI</div>
+                <div class="category-item" onclick="filterByCategory('downloader')">Downloader</div>
+                <div class="category-item" onclick="filterByCategory('stalk')">Stalk</div>
+                <div class="category-item active" onclick="filterByCategory('generator')">Generator</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content min-h-screen pb-24">
+        <!-- Header -->
+        <div class="bg-white border-b sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <h1 class="text-xl font-bold">Integrations</h1>
+                    <div class="relative">
+                        <a href="index.html" class="text-gray-600 hover:text-gray-900">Back to Home</a>
                     </div>
                 </div>
             </div>
         </div>
-    </nav>
-    <div class="flex">
-        <!-- Categories Sidebar -->
-        <div class="w-64 bg-white h-screen fixed left-0 border-r">
-            <div class="p-6">
-                <h2 class="text-xl font-semibold mb-6">Categories</h2>
-                <div class="space-y-2">
-                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('all')">All</div>
-                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('tools')">Tools</div>
-                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('AI')">AI</div>
-                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('stalk')">Stalk</div>
-                    <div class="category-item active rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('generator')">Generator</div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Main Content -->
-        <div class="ml-64 flex-1 p-8">
-            <div class="max-w-4xl mx-auto">
-                <h1 class="text-2xl font-bold mb-6">KTP Generator</h1>
-                
-               
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-2xl font-bold mb-6">KTP Generator</h1>
 
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <div class="space-y-6">
-                        <!-- Input Form -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label for="provinsi" class="block text-sm font-medium text-gray-700">Provinsi</label>
-                                <input type="text" id="provinsi" class="input-field" placeholder="e.g. JAWA BARAT">
-                            </div>
-                            <div>
-                                <label for="kota" class="block text-sm font-medium text-gray-700">Kota/Kabupaten</label>
-                                <input type="text" id="kota" class="input-field" placeholder="e.g. BANDUNG">
-                            </div>
-                            <div>
-                                <label for="nik" class="block text-sm font-medium text-gray-700">NIK</label>
-                                <input type="text" id="nik" class="input-field" placeholder="16-digit NIK" maxlength="16">
-                            </div>
-                            <div>
-                                <label for="nama" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
-                                <input type="text" id="nama" class="input-field" placeholder="Nama lengkap">
-                            </div>
-                            <div>
-                                <label for="ttl" class="block text-sm font-medium text-gray-700">Tempat/Tanggal Lahir</label>
-                                <input type="text" id="ttl" class="input-field" placeholder="e.g. BANDUNG, 25-09-1997">
-                            </div>
-                            <div>
-                                <label for="jenisKelamin" class="block text-sm font-medium text-gray-700">Jenis Kelamin</label>
-                                <select id="jenisKelamin" class="input-field">
-                                    <option value="LAKI-LAKI">LAKI-LAKI</option>
-                                    <option value="PEREMPUAN">PEREMPUAN</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="golonganDarah" class="block text-sm font-medium text-gray-700">Golongan Darah</label>
-                                <select id="golonganDarah" class="input-field">
-                                    <option value="A">A</option>
-                                    <option value="B">B</option>
-                                    <option value="AB">AB</option>
-                                    <option value="O">O</option>
-                                    <option value="-">-</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="alamat" class="block text-sm font-medium text-gray-700">Alamat</label>
-                                <input type="text" id="alamat" class="input-field" placeholder="e.g. JL. SUDIRMAN NO. 123">
-                            </div>
-                            <div>
-                                <label for="rtRw" class="block text-sm font-medium text-gray-700">RT/RW</label>
-                                <input type="text" id="rtRw" class="input-field" placeholder="e.g. 05/08">
-                            </div>
-                            <div>
-                                <label for="kelDesa" class="block text-sm font-medium text-gray-700">Kel/Desa</label>
-                                <input type="text" id="kelDesa" class="input-field" placeholder="e.g. RAWA BOBO">
-                            </div>
-                            <div>
-                                <label for="kecamatan" class="block text-sm font-medium text-gray-700">Kecamatan</label>
-                                <input type="text" id="kecamatan" class="input-field" placeholder="e.g. PASAR MINGGU">
-                            </div>
-                            <div>
-                                <label for="agama" class="block text-sm font-medium text-gray-700">Agama</label>
-                                <select id="agama" class="input-field">
-                                    <option value="ISLAM">ISLAM</option>
-                                    <option value="KRISTEN">KRISTEN</option>
-                                    <option value="KATOLIK">KATOLIK</option>
-                                    <option value="HINDU">HINDU</option>
-                                    <option value="BUDDHA">BUDDHA</option>
-                                    <option value="KONGHUCU">KONGHUCU</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="status" class="block text-sm font-medium text-gray-700">Status Perkawinan</label>
-                                <select id="status" class="input-field">
-                                    <option value="BELUM MENIKAH">BELUM MENIKAH</option>
-                                    <option value="MENIKAH">MENIKAH</option>
-                                    <option value="CERAI HIDUP">CERAI HIDUP</option>
-                                    <option value="CERAI MATI">CERAI MATI</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="pekerjaan" class="block text-sm font-medium text-gray-700">Pekerjaan</label>
-                                <input type="text" id="pekerjaan" class="input-field" placeholder="e.g. PEGAWAI SWASTA">
-                            </div>
-                            <div>
-                                <label for="kewarganegaraan" class="block text-sm font-medium text-gray-700">Kewarganegaraan</label>
-                                <input type="text" id="kewarganegaraan" class="input-field" value="WNI" readonly>
-                            </div>
-                            <div>
-                                <label for="berlaku" class="block text-sm font-medium text-gray-700">Berlaku Hingga</label>
-                                <input type="text" id="berlaku" class="input-field" value="SEUMUR HIDUP" readonly>
-                            </div>
-                            <div>
-                                <label for="pasPhoto" class="block text-sm font-medium text-gray-700">Pas Photo URL (Optional)</label>
-                                <input type="text" id="pasPhoto" class="input-field" placeholder="URL to 4x6 photo">
-                            </div>
+            <div class="bg-white rounded-lg shadow-sm p-4 md:p-6">
+                <div class="space-y-6">
+                    <!-- Input Form -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                        <div>
+                            <label for="provinsi" class="block text-sm font-medium text-gray-700 mb-1">Provinsi</label>
+                            <input type="text" id="provinsi" class="input-field" placeholder="e.g. JAWA BARAT">
                         </div>
-
-                        <div class="flex justify-center space-x-4">
-                            <button id="generateBtn" class="btn-primary">
-                                Generate KTP
-                            </button>
-                            <button id="downloadBtn" class="btn-secondary">
-                                Download
-                            </button>
+                        <div>
+                            <label for="kota" class="block text-sm font-medium text-gray-700 mb-1">Kota/Kabupaten</label>
+                            <input type="text" id="kota" class="input-field" placeholder="e.g. BANDUNG">
                         </div>
+                        <div>
+                            <label for="nik" class="block text-sm font-medium text-gray-700 mb-1">NIK</label>
+                            <input type="text" id="nik" class="input-field" placeholder="16-digit NIK" maxlength="16">
+                        </div>
+                        <div>
+                            <label for="nama" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                            <input type="text" id="nama" class="input-field" placeholder="Nama lengkap">
+                        </div>
+                        <div>
+                            <label for="ttl" class="block text-sm font-medium text-gray-700 mb-1">Tempat/Tanggal Lahir</label>
+                            <input type="text" id="ttl" class="input-field" placeholder="e.g. BANDUNG, 25-09-1997">
+                        </div>
+                        <div>
+                            <label for="jenisKelamin" class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin</label>
+                            <select id="jenisKelamin" class="input-field">
+                                <option value="LAKI-LAKI">LAKI-LAKI</option>
+                                <option value="PEREMPUAN">PEREMPUAN</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="golonganDarah" class="block text-sm font-medium text-gray-700 mb-1">Golongan Darah</label>
+                            <select id="golonganDarah" class="input-field">
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="AB">AB</option>
+                                <option value="O">O</option>
+                                <option value="-">-</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="alamat" class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
+                            <input type="text" id="alamat" class="input-field" placeholder="e.g. JL. SUDIRMAN NO. 123">
+                        </div>
+                        <div>
+                            <label for="rtRw" class="block text-sm font-medium text-gray-700 mb-1">RT/RW</label>
+                            <input type="text" id="rtRw" class="input-field" placeholder="e.g. 05/08">
+                        </div>
+                        <div>
+                            <label for="kelDesa" class="block text-sm font-medium text-gray-700 mb-1">Kel/Desa</label>
+                            <input type="text" id="kelDesa" class="input-field" placeholder="e.g. RAWA BOBO">
+                        </div>
+                        <div>
+                            <label for="kecamatan" class="block text-sm font-medium text-gray-700 mb-1">Kecamatan</label>
+                            <input type="text" id="kecamatan" class="input-field" placeholder="e.g. PASAR MINGGU">
+                        </div>
+                        <div>
+                            <label for="agama" class="block text-sm font-medium text-gray-700 mb-1">Agama</label>
+                            <select id="agama" class="input-field">
+                                <option value="ISLAM">ISLAM</option>
+                                <option value="KRISTEN">KRISTEN</option>
+                                <option value="KATOLIK">KATOLIK</option>
+                                <option value="HINDU">HINDU</option>
+                                <option value="BUDDHA">BUDDHA</option>
+                                <option value="KONGHUCU">KONGHUCU</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status Perkawinan</label>
+                            <select id="status" class="input-field">
+                                <option value="BELUM MENIKAH">BELUM MENIKAH</option>
+                                <option value="MENIKAH">MENIKAH</option>
+                                <option value="CERAI HIDUP">CERAI HIDUP</option>
+                                <option value="CERAI MATI">CERAI MATI</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="pekerjaan" class="block text-sm font-medium text-gray-700 mb-1">Pekerjaan</label>
+                            <input type="text" id="pekerjaan" class="input-field" placeholder="e.g. PEGAWAI SWASTA">
+                        </div>
+                        <div>
+                            <label for="kewarganegaraan" class="block text-sm font-medium text-gray-700 mb-1">Kewarganegaraan</label>
+                            <input type="text" id="kewarganegaraan" class="input-field" value="WNI" readonly>
+                        </div>
+                        <div>
+                            <label for="berlaku" class="block text-sm font-medium text-gray-700 mb-1">Berlaku Hingga</label>
+                            <input type="text" id="berlaku" class="input-field" value="SEUMUR HIDUP" readonly>
+                        </div>
+                        <div>
+                            <label for="pasPhoto" class="block text-sm font-medium text-gray-700 mb-1">Pas Photo URL (Optional)</label>
+                            <input type="text" id="pasPhoto" class="input-field" placeholder="URL to 4x6 photo">
+                        </div>
+                    </div>
 
-                        <!-- Status Message -->
-                        <div id="status" class="hidden text-center p-3 rounded-lg"></div>
+                    <div class="button-container flex justify-center space-x-0 md:space-x-4 mt-6">
+                        <button id="generateBtn" class="btn-primary">
+                            Generate KTP
+                        </button>
+                        <button id="downloadBtn" class="btn-secondary">
+                            Download
+                        </button>
+                    </div>
 
-                        <!-- Result Section -->
-                        <div id="result" class="hidden">
-                            <div class="border-t pt-4">
-                                <h3 class="text-lg font-semibold text-gray-900 mb-4">Generated KTP</h3>
-                                <div class="flex justify-center">
-                                    <img id="ktpImage" class="max-w-full h-auto rounded-lg shadow-lg" alt="Generated KTP" crossorigin="anonymous">
-                                </div>
+                    <!-- Status Message -->
+                    <div id="status" class="hidden text-center p-3 rounded-lg"></div>
+
+                    <!-- Result Section -->
+                    <div id="result" class="hidden">
+                        <div class="border-t pt-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Generated KTP</h3>
+                            <div class="flex justify-center">
+                                <img id="ktpImage" class="w-full md:max-w-2xl rounded-lg shadow-lg" alt="Generated KTP" crossorigin="anonymous">
                             </div>
                         </div>
                     </div>
@@ -229,6 +357,24 @@
 
     <script src="be/tools/ktp.js"></script>
     <script>
+        // Sidebar Toggle Function
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            
+            if (sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+            } else {
+                sidebar.classList.add('open');
+                overlay.classList.add('active');
+            }
+        }
+
+        // Mobile Menu Button Event
+        document.getElementById('mobileMenuBtn').addEventListener('click', toggleSidebar);
+        document.getElementById('overlay').addEventListener('click', toggleSidebar);
+
         function filterByCategory(category) {
             const categoryItems = document.querySelectorAll('.category-item');
             
