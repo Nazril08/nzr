@@ -7,24 +7,28 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="../../fe/tools/style.css" rel="stylesheet">
     <style>
-        .nav-link {
-            position: relative;
+        .card {
+            transition: all 0.3s ease;
         }
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -2px;
-            left: 0;
-            background-color: #3B82F6;
-            transition: width 0.3s ease;
+        .card:hover {
+            transform: translateY(-5px);
         }
-        .nav-link:hover::after {
-            width: 100%;
+        .category-item {
+            transition: all 0.2s ease;
         }
-        .nav-link.active::after {
-            width: 100%;
+        .category-item:hover {
+            background-color: #f3f4f6;
+        }
+        .category-item.active {
+            background-color: #000;
+            color: white;
+        }
+        .integration-card {
+            transition: all 0.3s ease;
+            display: block;
+        }
+        .integration-card.hidden {
+            display: none;
         }
         .copy-button {
             transition: all 0.3s ease;
@@ -38,27 +42,42 @@
     <!-- Navigation -->
     <nav class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex">
-                    <div class="flex-shrink-0 flex items-center">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
                         <h1 class="text-xl font-semibold text-gray-900">nzr-Multi Tools</h1>
                     </div>
                     <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                        <a href="../../index.html" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium">Home</a>
-                        <a href="../../ai-page.html" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium">AI Page</a>
+                        <a href="index.html" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium">Home</a>
                     </div>
                 </div>
             </div>
         </div>
     </nav>
+    <div class="flex">
+        <!-- Categories Sidebar -->
+        <div class="w-64 bg-white h-screen fixed left-0 border-r">
+            <div class="p-6">
+                <h2 class="text-xl font-semibold mb-6">Categories</h2>
+                <div class="space-y-2">
+                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('all')">All</div>
+                    <div class="category-item active rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('tools')">Tools</div>
+                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('AI')">AI</div>
+                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('stalk')">Stalk</div>
+                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('generator')">Generator</div>
+                </div>
+            </div>
+        </div>
 
-    <div class="container mx-auto px-4 py-8">
-        <div class="max-w-3xl mx-auto">
-            <!-- Email Generator Section -->
-            <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
-                <div class="p-6">
-                    <h2 class="text-2xl font-bold text-center mb-6">Temporary Email Generator</h2>
-                    
+        <!-- Main Content -->
+        <div class="ml-64 flex-1 p-8">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-2xl font-bold mb-6">Temporary Email Generator</h1>
+                
+             
+
+                <!-- Email Generator Section -->
+                <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
                     <div id="emailSection" class="space-y-6">
                         <div class="text-center">
                             <button onclick="generateEmail()" 
@@ -98,19 +117,17 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Inbox Section -->
-            <div class="bg-white rounded-xl shadow-md overflow-hidden">
-                <div class="p-6">
-                    <h2 class="text-2xl font-bold text-center mb-6">Check Inbox</h2>
+                <!-- Inbox Section -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h2 class="text-xl font-semibold mb-6">Check Inbox</h2>
                     
                     <div class="space-y-6">
                         <div class="flex space-x-4">
                             <input type="text" 
                                    id="inboxId" 
                                    placeholder="Paste your Email ID here" 
-                                   class="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                   class="flex-grow px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <button onclick="checkInbox()" 
                                     class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition duration-300 font-medium">
                                 Check Mail
@@ -130,8 +147,44 @@
             </div>
         </div>
     </div>
- <!-- Scripts -->
- <script src="Services/ratelimiter.js"></script>   <script src="Services/cache.js"></script>
- <script src="be/tools/tempmail.js"></script>
+
+    <!-- Scripts -->
+    <script src="Services/ratelimiter.js"></script>
+    <script src="Services/cache.js"></script>
+    <script src="be/tools/tempmail.js"></script>
+    <script>
+        function filterByCategory(category) {
+            const categoryItems = document.querySelectorAll('.category-item');
+            
+            // Update active category styling
+            categoryItems.forEach(item => {
+                if (item.textContent.toLowerCase() === category.toLowerCase() || 
+                    (category === 'all' && item.textContent === 'All')) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+
+            // Redirect to index.html with the selected category
+            if (category === 'all') {
+                window.location.href = 'index.html';
+            } else {
+                window.location.href = `index.html#${category.toLowerCase()}`;
+            }
+        }
+
+        // Set initial active state based on current category
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoryItems = document.querySelectorAll('.category-item');
+            categoryItems.forEach(item => {
+                if (item.textContent === 'Tools') {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html> 

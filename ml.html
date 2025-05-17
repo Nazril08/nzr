@@ -6,76 +6,149 @@
     <title>Mobile Legends Account Stalker - Multi Tools</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
+    <style>
+        .card {
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .category-item {
+            transition: all 0.2s ease;
+        }
+        .category-item:hover {
+            background-color: #f3f4f6;
+        }
+        .category-item.active {
+            background-color: #000;
+            color: white;
+        }
+        .integration-card {
+            transition: all 0.3s ease;
+            display: block;
+        }
+        .integration-card.hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
     <!-- Navigation -->
     <nav class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex">
-                    <div class="flex-shrink-0 flex items-center">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
                         <h1 class="text-xl font-semibold text-gray-900">nzr-Multi Tools</h1>
                     </div>
                     <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                        <a href="index.html" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium">Home</a>                        <a href="ai-page.html" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium">AI Page</a>
+                        <a href="index.html" class="nav-link inline-flex items-center px-1 pt-1 text-sm font-medium">Home</a>
                     </div>
                 </div>
             </div>
         </div>
     </nav>
-
-    <!-- Main Content -->
-    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div class="text-center mb-8">
-            <h2 class="text-3xl font-bold text-gray-900">Mobile Legends Account Stalker</h2>
-            <p class="mt-2 text-gray-600">Check Mobile Legends account details using User ID and Zone ID</p>
+    <div class="flex">
+        <!-- Categories Sidebar -->
+        <div class="w-64 bg-white h-screen fixed left-0 border-r">
+            <div class="p-6">
+                <h2 class="text-xl font-semibold mb-6">Categories</h2>
+                <div class="space-y-2">
+                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('all')">All</div>
+                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('tools')">Tools</div>
+                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('AI')">AI</div>
+                    <div class="category-item active rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('stalk')">Stalk</div>
+                    <div class="category-item rounded-md px-4 py-2 cursor-pointer" onclick="filterByCategory('generator')">Generator</div>
+                </div>
+            </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-md overflow-hidden">
-            <div class="p-6">
-                <div class="space-y-6">
-                    <!-- Input Form -->
-                    <div class="space-y-4">
-                        <div>
-                            <label for="userId" class="block text-sm font-medium text-gray-700">User ID</label>
-                            <input type="text" id="userId" class="input-field w-full rounded-md shadow-sm p-2" placeholder="Enter User ID">
-                        </div>
-                        <div>
-                            <label for="zoneId" class="block text-sm font-medium text-gray-700">Zone ID</label>
-                            <input type="text" id="zoneId" class="input-field w-full rounded-md shadow-sm p-2" placeholder="Enter Zone ID">
-                        </div>
-                        <button id="checkBtn" class="button-primary w-full py-2 px-4 rounded-md">
-                            Check Account
-                        </button>
-                    </div>
+        <!-- Main Content -->
+        <div class="ml-64 flex-1 p-8">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-2xl font-bold mb-6">Mobile Legends Account Stalker</h1>
+                
+                
 
-                    <!-- Status Message -->
-                    <div id="status" class="hidden text-center p-3 rounded-lg"></div>
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="space-y-6">
+                        <!-- Input Form -->
+                        <div class="space-y-4">
+                            <div>
+                                <label for="userId" class="block text-sm font-medium text-gray-700">User ID</label>
+                                <input type="text" id="userId" class="mt-1 w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter User ID">
+                            </div>
+                            <div>
+                                <label for="zoneId" class="block text-sm font-medium text-gray-700">Zone ID</label>
+                                <input type="text" id="zoneId" class="mt-1 w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter Zone ID">
+                            </div>
+                            <button id="checkBtn" class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors">
+                                Check Account
+                            </button>
+                        </div>
 
-                    <!-- Result Section -->
-                    <div id="result" class="hidden">
-                        <div class="border-t pt-4">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Account Information</h3>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="text-gray-600">Username</div>
-                                <div id="username" class="font-medium"></div>
-                                
-                                <div class="text-gray-600">User ID</div>
-                                <div id="displayUserId" class="font-medium"></div>
-                                
-                                <div class="text-gray-600">Zone ID</div>
-                                <div id="displayZoneId" class="font-medium"></div>
-                                
-                                <div class="text-gray-600">Region</div>
-                                <div id="region" class="font-medium"></div>
+                        <!-- Status Message -->
+                        <div id="status" class="hidden text-center p-3 rounded-lg"></div>
+
+                        <!-- Result Section -->
+                        <div id="result" class="hidden">
+                            <div class="border-t pt-4">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4">Account Information</h3>
+                                <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
+                                    <div class="text-gray-600">Username</div>
+                                    <div id="username" class="font-medium"></div>
+                                    
+                                    <div class="text-gray-600">User ID</div>
+                                    <div id="displayUserId" class="font-medium"></div>
+                                    
+                                    <div class="text-gray-600">Zone ID</div>
+                                    <div id="displayZoneId" class="font-medium"></div>
+                                    
+                                    <div class="text-gray-600">Region</div>
+                                    <div id="region" class="font-medium"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 
     <script src="be/tools/ml.js"></script>
+    <script>
+        function filterByCategory(category) {
+            const categoryItems = document.querySelectorAll('.category-item');
+            
+            // Update active category styling
+            categoryItems.forEach(item => {
+                if (item.textContent.toLowerCase() === category.toLowerCase() || 
+                    (category === 'all' && item.textContent === 'All')) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+
+            // Redirect to index.html with the selected category
+            if (category === 'all') {
+                window.location.href = 'index.html';
+            } else {
+                window.location.href = `index.html#${category.toLowerCase()}`;
+            }
+        }
+
+        // Set initial active state based on current category
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoryItems = document.querySelectorAll('.category-item');
+            categoryItems.forEach(item => {
+                if (item.textContent === 'Stalk') {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html> 
