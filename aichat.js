@@ -336,7 +336,7 @@ async function sendMessage() {
         // Get the appropriate prompt based on category
         const prompt = getPromptByCategory(category, message);
         
-        const response = await fetch(`https://fastrestapis.fasturl.cloud/aillm/gpt-4?ask=${encodeURIComponent(prompt)}&style=professional&category=${category}&sessionId=1`, {
+        const response = await fetch(`https://fastrestapis.fasturl.cloud/aillm/gpt-4o?ask=${encodeURIComponent(prompt)}&style=professional&category=${category}&sessionId=1`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
