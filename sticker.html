@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sticker Generator Tools</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <style>
+        /* Base styles */
+        .card {
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .category-item {
+            transition: all 0.2s ease;
+        }
+        .category-item:hover {
+            background-color: #f3f4f6;
+        }
+        .category-item.active {
+            background-color: #000;
+            color: white;
+        }
+
+        .logo {
+            padding: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #e5e7eb;
+            background: white;
+        }
+
+        .categories-section {
+            padding: 1.5rem;
+        }
+
+        .categories-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 1rem;
+        }
+
+        .category-item {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .category-item:hover {
+            background-color: #f3f4f6;
+            color: #2563eb;
+        }
+
+        .category-item.active {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .hidden {
+            display: none;
+        }
+        .loading {
+            border: 4px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 4px solid #3498db;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .dragover {
+            background-color: #e2e8f0;
+            border-color: #4299e1;
+        }
+        .status-success {
+            background-color: #c6f6d5;
+            color: #2f855a;
+        }
+        .status-error {
+            background-color: #fed7d7;
+            color: #c53030;
+        }
+        .tab-active {
+            background-color: #4299e1;
+            color: white;
+        }
+
+        /* Mobile styles */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: 100vh;
+                background: white;
+                transition: transform 0.3s ease-in-out;
+                transform: translateX(-100%);
+                z-index: 1000;
+                box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+            }
+            .logo {
+                position: relative;
+                display: block;
+                text-align: center;
+                border-bottom: 1px solid #e5e7eb;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+                left: 0;
+            }
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 999;
+                opacity: 0;
+                transition: opacity 0.3s ease-in-out;
+            }
+            .overlay.active {
+                display: block;
+                opacity: 1;
+            }
+            .main-content {
+                margin-left: 0 !important;
+                padding-top: 4rem;
+            }
+        }
+
+        /* Desktop styles */
+        @media (min-width: 769px) {
+            .logo {
+                position: relative;
+                border-bottom: 1px solid #e5e7eb;
+            }
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 256px;
+                height: 100vh;
+                overflow-y: auto;
+                background: white;
+                border-right: 1px solid #e5e7eb;
+            }
+            .main-content {
+                margin-left: 256px;
+            }
+            .mobile-menu-btn {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Mobile Menu Button -->
+    <button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+    </button>
+
+    <!-- Overlay -->
+    <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <div class="logo">
+            <div class="flex items-center gap-3">
+                <img src="https://preview.redd.it/is-liz-new-makeup-more-chinese-v0-k81y68v22j3e1.jpeg?auto=webp&s=a49eddc32c061196263a42402826f20d97d2e4db" 
+                     alt="Logo" 
+                     class="w-10 h-10 rounded-full object-cover border-2 border-gray-200">
+                <span class="text-xl font-semibold text-gray-900">nzr</span>
+            </div>
+        </div>
+        <div class="categories-section">
+            <h2 class="categories-title">Categories</h2>
+            <div class="space-y-2">
+                <a href="index.html" class="category-item block">All</a>
+                <a href="index.html#tools" class="category-item active block">Tools</a>
+                <a href="index.html#AI" class="category-item block">AI</a>
+                <a href="index.html#downloader" class="category-item block">Downloader</a>
+                <a href="index.html#stalk" class="category-item block">Stalk</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content min-h-screen pb-24">
+        <!-- Header -->
+        <div class="bg-white border-b sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <!-- Mobile Menu Button -->
+                    <button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                    
+                    <h1 class="text-xl font-bold">Sticker Generator</h1>
+                    
+                    <!-- Empty div for flex spacing -->
+                    <div class="w-10 md:hidden"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Regular Brat Sticker -->
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h2 class="text-2xl font-bold mb-6">Brat Sticker Generator</h2>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Enter Text</label>
+                        <input type="text" id="regularTextInput" 
+                               class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="Enter text for sticker"
+                               oninput="handleTextInput(this)">
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="text-gray-600 text-sm">
+                            <p class="font-bold mb-2">Tips:</p>
+                            <ul class="list-disc pl-5">
+                                <li>Masukkan teks yang ingin dijadikan stiker</li>
+                                <li>Stiker akan otomatis di-generate</li>
+                                <li>Klik tombol download untuk menyimpan stiker</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="regularResult" class="hidden">
+                        <div class="mb-4">
+                            <img id="bwImage" class="max-w-full h-auto rounded-lg shadow" alt="Generated Sticker">
+                        </div>
+                        <div class="text-center">
+                            <a id="downloadBtn" download 
+                               class="inline-block bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                                Download Sticker
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bratv2 Anime Sticker -->
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h2 class="text-2xl font-bold mb-6">Bratv2 Anime Sticker</h2>
+                    
+                    <div class="mb-4">
+                        <input type="text" id="animeTextInput" 
+                               class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="Masukkan teks untuk stiker anime">
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="text-gray-600 text-sm">
+                            <p class="font-bold mb-2">Tips:</p>
+                            <ul class="list-disc pl-5">
+                                <li>Masukkan teks yang ingin dijadikan stiker anime</li>
+                                <li>Klik Generate untuk membuat stiker</li>
+                                <li>Klik Download untuk menyimpan stiker</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="text-center mb-4">
+                        <button onclick="generateAnimeSticker()" 
+                                class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                            Generate Stiker Anime
+                        </button>
+                    </div>
+
+                    <div id="animeStatus" class="hidden"></div>
+
+                    <div id="animeResult" class="hidden">
+                        <div class="mb-4">
+                            <img id="animeImage" class="max-w-full h-auto rounded-lg shadow" alt="Generated Anime Sticker">
+                        </div>
+                        <div class="text-center">
+                            <a id="animeDownloadBtn" download 
+                               class="inline-block bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                                Download Sticker
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="sticker.js"></script>
+    <script>
+        // Toggle Sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const body = document.body;
+
+            if (sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+                body.style.overflow = '';
+            } else {
+                sidebar.classList.add('open');
+                overlay.classList.add('active');
+                body.style.overflow = 'hidden';
+            }
+        }
+
+        // Initialize mobile menu button
+        document.getElementById('mobileMenuBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleSidebar();
+        });
+
+        // Close sidebar when clicking overlay
+        document.getElementById('overlay').addEventListener('click', (e) => {
+            if (e.target.id === 'overlay') {
+                toggleSidebar();
+            }
+        });
+
+        // Close sidebar when pressing Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.getElementById('sidebar').classList.contains('open')) {
+                toggleSidebar();
+            }
+        });
+    </script>
+</body>
+</html> 
