@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OCR Tool - Multi Tools</title>
+    <title>Text to PDF Converter - Multi Tools</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
     <style>
@@ -57,112 +57,21 @@
             font-weight: 500;
         }
 
-        /* Mobile styles */
-        @media (max-width: 768px) {
-            .sidebar {
-                position: fixed;
-                top: 0;
-                left: -100%;
-                width: 80%;
-                max-width: 300px;
-                height: 100vh;
-                background: white;
-                transition: transform 0.3s ease-in-out;
-                transform: translateX(-100%);
-                z-index: 1000;
-                box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+        /* Mobile responsiveness */
+        @media (max-width: 640px) {
+            .content-container {
+                padding: 1rem;
             }
-            .logo {
-                position: relative;
-                display: block;
-                text-align: center;
-                border-bottom: 1px solid #e5e7eb;
+            .p-6 {
+                padding: 1.25rem;
             }
-            .sidebar.open {
-                transform: translateX(0);
-                left: 0;
+            .grid-cols-1 {
+                grid-template-columns: 1fr;
             }
-            .overlay {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0,0,0,0.5);
-                z-index: 999;
-                opacity: 0;
-                transition: opacity 0.3s ease-in-out;
+            #pdfViewer {
+                max-width: 100%;
+                height: auto;
             }
-            .overlay.active {
-                display: block;
-                opacity: 1;
-            }
-            .main-content {
-                margin-left: 0 !important;
-                padding-top: 4rem;
-            }
-        }
-
-        /* Desktop styles */
-        @media (min-width: 769px) {
-            .logo {
-                position: relative;
-                border-bottom: 1px solid #e5e7eb;
-            }
-            .sidebar {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 256px;
-                height: 100vh;
-                overflow-y: auto;
-                background: white;
-                border-right: 1px solid #e5e7eb;
-            }
-            .main-content {
-                margin-left: 256px;
-            }
-            .mobile-menu-btn {
-                display: none;
-            }
-        }
-
-        .file-input-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-        }
-        .file-input-wrapper input[type=file] {
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-        }
-        .btn-primary {
-            background-color: #3B82F6;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-        .btn-primary:hover {
-            background-color: #2563EB;
-        }
-        .btn-secondary {
-            background-color: #10B981;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-        .btn-secondary:hover {
-            background-color: #059669;
         }
     </style>
 </head>
@@ -175,11 +84,11 @@
     </button>
 
     <!-- Overlay -->
-    <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+    <div id="overlay" class="overlay"></div>
 
     <!-- Sidebar -->
     <div id="sidebar" class="sidebar">
-        <div class="logo">
+        <div class="logo p-6 border-b">
             <div class="flex items-center gap-3">
                 <img src="https://preview.redd.it/is-liz-new-makeup-more-chinese-v0-k81y68v22j3e1.jpeg?auto=webp&s=a49eddc32c061196263a42402826f20d97d2e4db" 
                      alt="Logo" 
@@ -215,72 +124,107 @@
         </div>
 
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <h1 class="text-2xl font-bold mb-6">OCR Tool</h1>
+            <h1 class="text-2xl font-bold mb-6">Text to PDF Converter</h1>
 
             <div class="bg-white rounded-lg shadow-sm p-6">
                 <!-- Tips Section -->
                 <div class="bg-blue-50 rounded-lg p-4 mb-6">
-                    <h3 class="text-lg font-semibold text-blue-900 mb-2">Tips for Better Results:</h3>
+                    <h3 class="text-lg font-semibold text-blue-900 mb-2">Tips:</h3>
                     <ul class="text-sm space-y-2 text-blue-800">
-                        <li>• Use clear, well-lit images</li>
-                        <li>• Ensure text is properly focused</li>
-                        <li>• Avoid skewed or rotated text</li>
-                        <li>• Supported formats: JPG, PNG (max 5MB)</li>
+                        <li>• Enter your text and customize the PDF appearance</li>
+                        <li>• Choose from various fonts and formatting options</li>
+                        <li>• Add headers, footers, and watermarks as needed</li>
+                        <li>• Preview and download your generated PDF</li>
                     </ul>
                 </div>
 
+                <!-- Form Section -->
                 <div class="space-y-6">
-                    <!-- Upload Section -->
-                    <div class="space-y-4">
-                        <div class="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 hover:border-blue-500 transition-colors">
-                            <div class="file-input-wrapper">
-                                <button class="btn-primary">
-                                    Choose Image
-                                </button>
-                                <input type="file" id="image-file" accept="image/*" />
-                            </div>
-                            <p id="file-name" class="mt-2 text-sm text-gray-500">No file selected</p>
-                            <button id="file-extract-btn" class="btn-primary mt-4 hidden">
-                                Extract Text
-                            </button>
-                        </div>
-
-                        <!-- Preview Section -->
-                        <div class="relative rounded-md bg-gray-50 p-4">
-                            <div id="image-preview" class="flex justify-center items-center">
-                                <p class="text-gray-500">Image preview will appear here</p>
-                            </div>
-                        </div>
-
-                        <!-- Result Section -->
-                        <div id="result-container" class="hidden mt-6">
-                            <div class="border-t pt-6">
-                                <h3 class="text-lg font-semibold text-gray-900 mb-4">Extracted Text:</h3>
-                                <div id="extracted-text" class="bg-gray-50 p-4 rounded-lg whitespace-pre-wrap min-h-[200px] border border-gray-200 text-base"></div>
-                                <div class="mt-4 flex justify-end">
-                                    <button id="copy-btn" class="btn-secondary">
-                                        Copy Text
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Loading State -->
-                        <div id="loading" class="hidden">
-                            <div class="flex justify-center items-center py-8">
-                                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-                            </div>
-                            <p class="text-center text-gray-600">Processing image, please wait...</p>
-                        </div>
-
-                        <!-- Error Message -->
-                        <div id="error-message" class="hidden bg-red-100 text-red-700 p-4 rounded-lg"></div>
+                    <!-- Text Input -->
+                    <div>
+                        <label for="text" class="block text-sm font-medium text-gray-700 mb-2">Text Content</label>
+                        <textarea id="text" rows="6" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your text here..."></textarea>
                     </div>
+
+                    <!-- Font Settings -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="font" class="block text-sm font-medium text-gray-700 mb-2">Font</label>
+                            <select id="font" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="Helvetica">Helvetica</option>
+                                <option value="Times">Times</option>
+                                <option value="Courier">Courier</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="fontSize" class="block text-sm font-medium text-gray-700 mb-2">Font Size</label>
+                            <input type="number" id="fontSize" value="12" min="8" max="72" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+
+                    <!-- Alignment -->
+                    <div>
+                        <label for="align" class="block text-sm font-medium text-gray-700 mb-2">Text Alignment</label>
+                        <select id="align" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="left">Left</option>
+                            <option value="center">Center</option>
+                            <option value="right">Right</option>
+                            <option value="justify">Justify</option>
+                        </select>
+                    </div>
+
+                    <!-- Document Settings -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="title" class="block text-sm font-medium text-gray-700 mb-2">Document Title</label>
+                            <input type="text" id="title" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Optional title">
+                        </div>
+                        <div>
+                            <label for="header" class="block text-sm font-medium text-gray-700 mb-2">Header Text</label>
+                            <input type="text" id="header" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Optional header">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="footer" class="block text-sm font-medium text-gray-700 mb-2">Footer Text</label>
+                            <input type="text" id="footer" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Optional footer">
+                        </div>
+                        <div>
+                            <label for="watermark" class="block text-sm font-medium text-gray-700 mb-2">Watermark URL</label>
+                            <input type="text" id="watermark" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Optional watermark image URL">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="wmSize" class="block text-sm font-medium text-gray-700 mb-2">Watermark Size</label>
+                        <input type="number" id="wmSize" value="30" min="10" max="100" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button id="generateBtn" class="flex-1 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition duration-300 font-medium">
+                            Generate PDF
+                        </button>
+                        <button id="downloadBtn" class="flex-1 bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition duration-300 font-medium hidden">
+                            Download PDF
+                        </button>
+                    </div>
+
+                    <!-- Status Message -->
+                    <div id="status" class="mt-4 text-center p-3 rounded-lg hidden"></div>
+                </div>
+
+                <!-- PDF Preview -->
+                <div id="result" class="mt-8 hidden">
+                    <h3 class="text-lg font-semibold mb-4">PDF Preview</h3>
+                    <iframe id="pdfViewer" class="w-full h-[600px] border border-gray-300 rounded-lg"></iframe>
                 </div>
             </div>
         </div>
     </div>
 
+    <script src="be/tools/textToPdf.js"></script>
     <script>
         // Sidebar Toggle Function
         function toggleSidebar() {
@@ -331,7 +275,5 @@
             });
         });
     </script>
-    <script src="js/common.js"></script>
-    <script src="be/tools/ocr.js"></script>
 </body>
 </html> 
